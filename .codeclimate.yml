@@ -5,10 +5,13 @@ engines:
       languages:
         python:
           python_version: 3
+          mass_threshold: 50
   pep8:
     enabled: true
   radon:
     enabled: true
+    config:
+      threshold: "C"
 
 ratings:
   paths:
