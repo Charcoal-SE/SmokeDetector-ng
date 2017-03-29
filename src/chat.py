@@ -81,11 +81,9 @@ def on_msg(msg, client, room):
         if message.owner.id in config.my_ids:
             _last_messages[room] = message
         elif message.parent and message.parent.owner.id in config.my_ids:
-            send_to_room(room, commands.dispatch_reply_command(
-                message, message.content))
+            send_to_room(room, commands.dispatch_reply_command(message, message.content))
         elif message.content.startswith(config.shorthand_prefix):
-            send_to_room(
-                room, commands.dispatch_shorthand_command(message, room))
+            send_to_room(room, commands.dispatch_shorthand_command(message, room))
         elif message.content.startswith(config.command_prefix):
             send_to_room(room, commands.dispatch_command(message))
 
@@ -138,8 +136,7 @@ def tell_rooms(msg, has, hasnt):
 
 @require_chat
 def handle_start():
-    tell_rooms_with(
-        "debug", "SmokeDetector-ng started at revision %s." % git.rev())
+    tell_rooms_with("debug", "SmokeDetector-ng started at revision %s." % git.rev())
 
 
 @require_chat
