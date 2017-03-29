@@ -1,2 +1,2 @@
-# vim: set filetype=python tabstop=2 shiftwidth=2 expandtab:
+# vim: set filetype=python tabstop=4 shiftwidth=4 expandtab:
 

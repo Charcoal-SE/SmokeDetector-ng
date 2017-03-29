@@ -1,22 +1,24 @@
-# vim: set filetype=python tabstop=2 shiftwidth=2 expandtab:
+# vim: set filetype=python tabstop=4 shiftwidth=4 expandtab:
 
 import chat
 import secrets
 import status
 import ws
 
-def start(handler):
-  if not secrets._secrets:
-    print("Secret store not already open: started without daemon?")
-    secrets.open_store()
 
-  chat.init()
+def start(handler):
+    if not secrets._secrets:
+        print("Secret store not already open: started without daemon?")
+        secrets.open_store()
+
+    chat.init()
 
 #  retrieve.init_pools()
 #  spam.init_pools()
-  handler()
+    handler()
 
-  ws.start_event_loop()
+    ws.start_event_loop()
+
 
 if __name__ == "__main__":
-  start(status._handlers[status.START].method)
+    start(status._handlers[status.START].method)
