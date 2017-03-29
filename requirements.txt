@@ -1,0 +1,4 @@
+chatexchange
+dulwich
+pycrypto
+websocket-client
