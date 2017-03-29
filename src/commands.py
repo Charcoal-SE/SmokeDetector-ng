@@ -29,7 +29,12 @@ def command(*type_signature, reply=False, whole_msg=False):
   return decorator
 
 def dispatch_command(msg):
-  command, args = msg.content.split(" ", 1)
+  command_parts = msg.content.split(" ", 1)
+
+  if len(command_parts) == 2:
+    command, args = command_parts
+  else:
+    command, = command_parts
 
   command_name = command[len(config.command_prefix):]
 
