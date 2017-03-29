@@ -2,19 +2,19 @@
 
 import os
 
-import smokey_entry
-import smokey_secrets
-import smokey_status
+import entry
+import secrets
+import status
 
-smokey_secrets.open_store()
+secrets.open_store()
 
 err_handler = None
 
 if __name__ == "__main__":
-  status = smokey_status.START
-  handler = smokey_status._handlers[smokey_status.START]
+  status = status.START
+  handler = status._handlers[status.START]
 
-  while status != smokey_status.END:
+  while status != status.END:
     if handler.defer:
       err_handler = handler.method
     else:
@@ -23,6 +23,6 @@ if __name__ == "__main__":
     pid = os.fork()
 
     if pid:
-      status, handler = smokey_status.extract_status(os.waitpid(pid, 0)[1])
+      status, handler = status.extract_status(os.waitpid(pid, 0)[1])
     else:
-      smokey_entry.start(err_handler)
+      entry.start(err_handler)

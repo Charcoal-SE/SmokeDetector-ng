@@ -3,9 +3,9 @@
 import itertools
 import string
 
-import smokey_config
-import smokey_chat
-import smokey_status
+import config
+import chat
+import status
 
 _commands = {"reply": {}, "prefix": {}}
 
@@ -31,7 +31,7 @@ def command(*type_signature, reply=False, whole_msg=False):
 def dispatch_command(msg):
   command, args = msg.content.split(" ", 1)
 
-  command_name = command[len(smokey_config.command_prefix):]
+  command_name = command[len(config.command_prefix):]
 
   if command_name not in _commands["prefix"]:
     return "@%s No such command %s." % (msg.owner.name, command_name)
@@ -65,7 +65,7 @@ def dispatch_reply_command(msg, command):
     return "@%s %s" % (msg.owner.name, function(msg.id, original_msg=msg))
 
 def dispatch_shorthand_command(msg, room):
-  commands = msg.content[len(smokey_config.shorthand_prefix):].split()
+  commands = msg.content[len(config.shorthand_prefix):].split()
 
   output = []
 
@@ -76,7 +76,7 @@ def dispatch_shorthand_command(msg, room):
     else:
       count = 1
     
-    for message in itertools.islice(smokey_chat.unwind_prev_messages(room), count):
+    for message in itertools.islice(chat.unwind_prev_messages(room), count):
       if command != "-":
         output.append(dispatch_reply_command(message, command))
 
@@ -92,8 +92,8 @@ def id(x):
 
 @command(reply=False)
 def pull():
-  os.exit(smokey_status.PULL)
+  os.exit(status.PULL)
 
 @command(reply=False)
 def location():
-  return smokey_config.location
+  return config.location

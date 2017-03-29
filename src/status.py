@@ -2,8 +2,8 @@
 
 import collections
 
-from smokey_chat import handle_err, handle_signal, handle_start
-from smokey_git import handle_pull
+from chat import handle_err, handle_signal, handle_start
+from git import handle_pull
 
 Handler = collections.namedtuple("Handler", ["method", "defer"])
 

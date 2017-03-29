@@ -7,7 +7,7 @@ import Crypto.Util
 import getpass
 import json
 
-import smokey_config
+import config
 
 _required_credentials = [
   "email",
@@ -53,7 +53,7 @@ def open_store():
       if credential not in secrets:
         secrets[credential] = getpass.getpass(credential + ": ")
 
-    if smokey_config.require_optional_credentials:
+    if config.require_optional_credentials:
       for credential in _optional_credentials:
         if credential not in secrets:
           secrets[credential] = getpass.getpass(credential + ": ")

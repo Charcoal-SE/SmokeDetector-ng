@@ -4,9 +4,9 @@ import chatexchange.client
 import chatexchange.events
 import json
 
-import smokey_config
-import smokey_git
-import smokey_secrets
+import config
+import git
+import secrets
 
 _init = False
 
@@ -27,7 +27,7 @@ def require_chat(function):
 
   return f
 
-@smokey_secrets.require_secrets
+@secrets.require_secrets
 def init():
   global _clients
   global _init
@@ -36,7 +36,7 @@ def init():
 
   for site in _clients.keys():
     client = chatexchange.client.Client(site)
-    client.login(smokey_secrets.email, smokey_secrets.pw)
+    client.login(secrets.email, secrets.pw)
 
     _clients[site] = client
 
@@ -74,14 +74,14 @@ def on_msg(msg, client, room):
   if isinstance(msg, chatexchange.events.MessagePosted) or isinstance(msg, chatexchange.events.MessageEdited):
     message = msg.message
 
-    if message.owner.id in smokey_config.my_ids:
+    if message.owner.id in config.my_ids:
       _last_messages[room] = message
-    elif message.parent and message.parent.owner.id in smokey_config.my_ids:
-      send_to_room(room, smokey_commands.dispatch_reply_command(message, message.content))
-    elif message.content.startswith(smokey_config.shorthand_prefix):
-      send_to_room(room, smokey_commands.dispatch_shorthand_command(message, room))
-    elif message.content.startswith(smokey_config.command_prefix):
-      send_to_room(room, smokey_commands.dispatch_command(message))
+    elif message.parent and message.parent.owner.id in config.my_ids:
+      send_to_room(room, commands.dispatch_reply_command(message, message.content))
+    elif message.content.startswith(config.shorthand_prefix):
+      send_to_room(room, commands.dispatch_shorthand_command(message, room))
+    elif message.content.startswith(config.command_prefix):
+      send_to_room(room, commands.dispatch_command(message))
 
 @require_chat
 def send_to_room(room, msg):
@@ -127,7 +127,7 @@ def tell_rooms(msg, has, hasnt):
 
 @require_chat
 def handle_start():
-  tell_rooms_with("debug", "SmokeDetector-ng started at revision %s." % smokey_git.rev())
+  tell_rooms_with("debug", "SmokeDetector-ng started at revision %s." % git.rev())
 
 @require_chat
 def handle_signal(signal):
@@ -146,4 +146,4 @@ def unwind_prev_messages(room):
 
     current = current.parent
 
-import smokey_commands
+import commands

@@ -2,7 +2,7 @@
 
 import websocket
 
-import smokey_chat
+import chat
 
 def start_event_loop():
   socket = websocket.WebSocketApp("ws://qa.sockets.stackexchange.com", 
@@ -17,5 +17,5 @@ def init_ws(socket):
   socket.send("155-questions-active")
 
 def restart_ws(_):
-  smokey_chat.tell_rooms_with("debug", "Re-opened SE websocket.")
+  chat.tell_rooms_with("debug", "Re-opened SE websocket.")
   start_event_loop()
