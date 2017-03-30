@@ -174,7 +174,7 @@ def handle_err():
 
 
 @require_chat
-def get_last_messages(room,count):
+def get_last_messages(room, count):
     for msg_id in itertools.islice(reversed(_last_messages[(room._client.host, room.id)]), count):
         yield room._client.get_message(msg_id)
 
