@@ -89,9 +89,10 @@ def on_msg(msg, client, room):
 
 
 @require_chat
-def send_to_room(room, msg):
+def send_to_room(room, msg, **kwargs):
     msg = msg.rstrip()
-    msg = "[ [SmokeDetector-ng]({}) ] ".format(config.github) + msg
+    if not kwargs.get('no_prefix'):
+        msg = "[ [SmokeDetector-ng]({}) ] ".format(config.github) + msg
 
     if (room._client.host, room.id) in _room_permissions["commands"] and room in _last_messages:
         if "\n" in msg:
@@ -103,17 +104,17 @@ def send_to_room(room, msg):
 
 
 @require_chat
-def tell_rooms_with(prop, msg):
-    tell_rooms(msg, (prop,), ())
+def tell_rooms_with(prop, msg, **kwargs):
+    tell_rooms(msg, (prop,), (), **kwargs)
 
 
 @require_chat
-def tell_rooms_without(prop, msg):
-    tell_rooms(msg, (), (prop,))
+def tell_rooms_without(prop, msg, **kwargs):
+    tell_rooms(msg, (), (prop,), **kwargs)
 
 
 @require_chat
-def tell_rooms(msg, has, hasnt):
+def tell_rooms(msg, has, hasnt, **kwargs):
     global _rooms
 
     target_rooms = set()
@@ -132,7 +133,7 @@ def tell_rooms(msg, has, hasnt):
                 target_rooms.add(_rooms[roomid])
 
     for room in target_rooms:
-        send_to_room(room, msg)
+        send_to_room(room, msg, **kwargs)
 
 
 @require_chat
