@@ -45,8 +45,7 @@ def open_store():
         ciphertext = store_file.read()
 
         counter = Crypto.Util.Counter.new(64, prefix=nonce)
-        decrypt = Crypto.Cipher.AES.new(
-            key, Crypto.Cipher.AES.MODE_CTR, counter=counter)
+        decrypt = Crypto.Cipher.AES.new(key, Crypto.Cipher.AES.MODE_CTR, counter=counter)
 
         plaintext = decrypt.decrypt(ciphertext).decode("utf-8")
 
@@ -79,8 +78,7 @@ def make_store(plain_filename, cipher_filename):
             plaintext = plaintext_file.read()
 
             counter = Crypto.Util.Counter.new(64, prefix=nonce)
-            encrypt = Crypto.Cipher.AES.new(
-                key, Crypto.Cipher.AES.MODE_CTR, counter=counter)
+            encrypt = Crypto.Cipher.AES.new(key, Crypto.Cipher.AES.MODE_CTR, counter=counter)
 
             ciphertext_file.write(nonce)
             ciphertext_file.write(encrypt.encrypt(plaintext))
@@ -91,4 +89,4 @@ def make_store(plain_filename, cipher_filename):
 if __name__ == "__main__":
     import sys
 
-    make_store("secrets.json" if len(sys.argv) < 2 else sys.argv[1], "secrets.json.aes" if len(sys.argv) < 3 else sys.argv[2])
+    make_store("../config/secrets.json" if len(sys.argv) < 2 else sys.argv[1], "../config/secrets.json.aes" if len(sys.argv) < 3 else sys.argv[2])

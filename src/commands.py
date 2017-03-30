@@ -13,8 +13,7 @@ _commands = {"reply": {}, "prefix": {}}
 def command(*type_signature, reply=False, whole_msg=False):
     def decorator(func):
         def f(*args, original_msg=None):
-            processed_args = [type(arg)
-                              for type, arg in zip(type_signature, args)]
+            processed_args = [type(arg) for type, arg in zip(type_signature, args)]
 
             if whole_msg:
                 return func(original_msg, *processed_args)
