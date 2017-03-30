@@ -16,5 +16,5 @@ def init_ws(socket):
 
 
 def restart_ws(_):
-    chat.tell_rooms_with("debug", "Re-opened SE websocket.", no_prefix=True)
+    chat.tell_rooms_with("debug", "Re-opened SE websocket.")
     start_event_loop()
