@@ -97,9 +97,9 @@ def on_msg(msg, client, room):
 
         if message.owner.id in config.my_ids:
             if room.id not in _last_messages:
-                _last_messages[(client.host, room.id)] = [message]
+                _last_messages[(client.host, room.id)] = [message.id]
             else:
-                _last_messages[(client.host, room.id)].append(message)
+                _last_messages[(client.host, room.id)].append(message.id)
 
             _pickle_run.set()
         elif message.parent and message.parent.owner.id in config.my_ids:
