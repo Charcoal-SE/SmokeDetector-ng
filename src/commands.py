@@ -1,5 +1,6 @@
 # vim: set filetype=python tabstop=4 shiftwidth=4 expandtab:
 
+import re
 import string
 from typing import Union
 
