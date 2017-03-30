@@ -91,6 +91,7 @@ def on_msg(msg, client, room):
 @require_chat
 def send_to_room(room, msg):
     msg = msg.rstrip()
+    msg = "[ [SmokeDetector-ng]({}) ] ".format(config.github) + msg
 
     if (room._client.host, room.id) in _room_permissions["commands"] and room in _last_messages:
         if "\n" in msg:
@@ -136,7 +137,8 @@ def tell_rooms(msg, has, hasnt):
 
 @require_chat
 def handle_start():
-    tell_rooms_with("debug", "SmokeDetector-ng started at revision %s." % git.rev())
+    tell_rooms_with("debug", "SmokeDetector-ng started at revision [{}]({}).".format(git.rev()[0:7], config.github
+                                                                                     + "/commit/" + git.rev()[0:40]))
 
 
 @require_chat
