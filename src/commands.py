@@ -40,7 +40,7 @@ def dispatch_command(msg) -> str:
     if len(command_parts) == 2:
         command, args = command_parts
     else:
-        command = command_parts
+        command, = command_parts
         args = ""
 
     command_name = command[len(config.command_prefix):]
@@ -85,15 +85,14 @@ def dispatch_shorthand_command(msg, room) -> str:
     processed_commands = []
 
     for command in commands:
-        if re.match("^\d", command):
-            for _ in range(int(command[0])):
-              processed_commands.append(command[1:])
-        else:
-            processed_commands.append(command)
+        count, command = re.match(r"^(\d*)(.*)", command).groups()
 
-    for message in chat.get_last_messages(room, len(processed_commands)):
-        if command != "-":
-            output.append(dispatch_reply_command(message, msg, command))
+        for _ in range(int(count) if count else 1):
+            processed_commands.append(command)
+    
+    for current_command, message in zip(processed_commands, chat.get_last_messages(room, len(processed_commands))):
+        if current_command != "-":
+            output.append(dispatch_reply_command(message, msg, current_command))
 
     return "\n".join(output)
 
