@@ -67,6 +67,10 @@ def open_store():
         _secrets = True
 
 
+def secrets_loaded():
+    return _secrets;
+
+
 def make_store(plain_filename, cipher_filename):
     sha256 = Crypto.Hash.SHA256.new()
     sha256.update(getpass.getpass("Store password: ").encode("utf-8"))
