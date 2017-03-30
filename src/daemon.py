@@ -11,10 +11,10 @@ secrets.open_store()
 err_handler = None
 
 if __name__ == "__main__":
-    status = status.START
+    status_code = status.START
     handler = status._handlers[status.START]
 
-    while status != status.END:
+    while status_code != status.END:
         if handler.defer:
             err_handler = handler.method
         else:
@@ -23,6 +23,6 @@ if __name__ == "__main__":
         pid = os.fork()
 
         if pid:
-            status, handler = status.extract_status(os.waitpid(pid, 0)[1])
+            status_code, handler = status.extract_status(os.waitpid(pid, 0)[1])
         else:
             entry.start(err_handler)
