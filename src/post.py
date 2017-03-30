@@ -95,8 +95,36 @@ class Post:
 
         if "BodyIsSummary" in response and response["BodyIsSummary"] is True:
             self._body_is_summary = True
-        else:
-            self._body_is_summary = False
+            
+        elements = {
+            'site': '_post_site',
+            'link': '_post_url',
+            'score': '_post_score',
+            'up_vote_count': "_votes['upvotes']",
+            'down_vote_count': "_votes['downvotes']",
+            'owner': {
+                'display_name': '_user_name',
+                'link': '_user_url',
+                'reputation': '_owner_rep'
+               },
+             'question_id': '_post_id', 
+             'answer_id': '_post_id'
+            }
+        
+        for (key, var) in elements.iterkeys():
+            try:
+                if key == 'owner':
+                    for subkey in elements['owner'].iterkeys():
+                        try:
+                            # code
+                        except:  # Improve this except later
+                            continue  # Go to next subkey
+                    continue  # Go to next key because we're done processing the 'owner' key.
+                
+                # Other keys
+                #code
+            except:  # Improve this except later
+                continue  # Go to next key
 
         if 'site' in response:
             self._post_site = response['site']
