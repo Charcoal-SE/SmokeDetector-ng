@@ -1,7 +1,7 @@
 # vim: set filetype=python tabstop=4 shiftwidth=4 expandtab:
 
 import re
-from typing import Union
+import string
 
 import config
 import chat
@@ -15,7 +15,7 @@ def command(*type_signature, reply=False, whole_msg=False):
     # noinspection PyMissingTypeHints
     def decorator(func):
         # noinspection PyShadowingBuiltins
-        def f(*args, original_msg=None) -> Union[function, object]:
+        def f(*args, original_msg=None) -> object:
             processed_args = [type(arg) for type, arg in zip(type_signature, args)]
 
             if whole_msg:
@@ -34,7 +34,7 @@ def command(*type_signature, reply=False, whole_msg=False):
 
 
 # noinspection PyShadowingNames,PyShadowingBuiltins
-def dispatch_command(msg) -> Union[object, function, str]:
+def dispatch_command(msg) -> str:
     command_parts = msg.content.split(" ", 1)
 
     if len(command_parts) == 2:
@@ -114,5 +114,5 @@ def pull() -> None:
 
 
 @command(reply=False)
-def location() -> Union[str, object]:
+def location() -> str:
     return config.location
