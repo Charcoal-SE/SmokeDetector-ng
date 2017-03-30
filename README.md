@@ -1,5 +1,6 @@
 # SmokeDetector-ng
 [![Code Climate](https://codeclimate.com/github/Charcoal-SE/SmokeDetector-ng/badges/gpa.svg)](https://codeclimate.com/github/Charcoal-SE/SmokeDetector-ng)
+[![Dependency Status](https://www.versioneye.com/user/projects/58dd73dcd6c98d004405474f/badge.svg?style=flat-square)](https://www.versioneye.com/user/projects/58dd73dcd6c98d004405474f)
 
 ## Setup
 

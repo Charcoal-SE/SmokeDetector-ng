@@ -1,4 +1,4 @@
-chatexchange
-dulwich
-pycrypto
-websocket-client
+chatexchange==0.0.3
+dulwich==0.17.3
+pycrypto==2.6.1
+websocket-client==0.40.0
