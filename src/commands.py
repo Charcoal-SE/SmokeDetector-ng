@@ -1,6 +1,6 @@
 # vim: set filetype=python tabstop=4 shiftwidth=4 expandtab:
 
-import itertools
+import re
 import string
 
 import config
@@ -77,14 +77,13 @@ def dispatch_shorthand_command(msg, room):
     output = []
 
     for command in commands:
-        print(command)
-        if command.startswith(string.digits):
+        if re.match("^\d", command):
             count = int(command[0])
             command = command[1:]
         else:
             count = 1
 
-        for message in reversed(chat.get_last_messages(room)[-count:]):
+        for message in chat.get_last_messages(room, count):
             if command != "-":
                 output.append(dispatch_reply_command(message, msg, command))
 

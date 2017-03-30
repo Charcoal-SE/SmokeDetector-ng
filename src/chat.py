@@ -2,6 +2,7 @@
 
 import chatexchange.client
 import chatexchange.events
+import itertools
 import json
 import os.path
 import pickle
@@ -173,8 +174,10 @@ def handle_err():
 
 
 @require_chat
-def get_last_messages(room):
-    return _last_messages[(room._client.host, room.id)]
+def get_last_messages(room,count):
+    for msg_id in itertools.islice(reversed(_last_messages[(room._client.host, room.id)]), count):
+        yield room._client.get_message(msg_id)
+
 
 # This is a hack and we should fix it ASAP.
 import commands
