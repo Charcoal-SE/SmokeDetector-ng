@@ -3,6 +3,9 @@
 import chatexchange.client
 import chatexchange.events
 import json
+import os.path
+import pickle
+import threading
 
 import config
 import git
@@ -20,11 +23,12 @@ _room_permissions = None
 _rooms = {}
 _last_messages = {}
 
+_pickle_run = threading.Event()
 
 def require_chat(function):
     def f(*args, **kwargs):
         assert _init
-        function(*args, **kwargs)
+        return function(*args, **kwargs)
 
     return f
 
@@ -49,8 +53,12 @@ def init():
 
         room.join()
         room.watch(lambda msg, client: on_msg(msg, client, room))
-        _rooms[roomid] = room
+        _rooms[(site, roomid)] = room
 
+    if os.path.isfile("../pickles/last_messages.pck"):
+        _last_messages = pickle.load(open("../pickles/last_messages.pck", "rb"))
+
+    threading.Thread(name="pickle runner", target=pickle_last_messages).start()
     _init = True
 
 
@@ -73,15 +81,31 @@ def parse_room_config():
     return rooms
 
 
+def pickle_last_messages():
+    while True:
+        _pickle_run.wait()
+        _pickle_run.clear()
+
+        with open("../pickles/last_messages.pck", "wb") as pickle_file:
+            pickle.dump(_last_messages, pickle_file)
+
+
 @require_chat
 def on_msg(msg, client, room):
     if isinstance(msg, chatexchange.events.MessagePosted) or isinstance(msg, chatexchange.events.MessageEdited):
         message = msg.message
 
         if message.owner.id in config.my_ids:
-            _last_messages[room] = message
+            if room.id not in _last_messages:
+                _last_messages[(client.host, room.id)] = [message]
+            else:
+                _last_messages[(client.host, room.id)].append(message)
+
+            _pickle_run.set()
         elif message.parent and message.parent.owner.id in config.my_ids:
-            send_to_room(room, commands.dispatch_reply_command(message, message.content))
+            command = message.content.split(" ", 1)[1]
+
+            send_to_room(room, commands.dispatch_reply_command(message.parent, message, command))
         elif message.content.startswith(config.shorthand_prefix):
             send_to_room(room, commands.dispatch_shorthand_command(message, room))
         elif message.content.startswith(config.command_prefix):
@@ -91,16 +115,11 @@ def on_msg(msg, client, room):
 @require_chat
 def send_to_room(room, msg, **kwargs):
     msg = msg.rstrip()
-    if not kwargs.get('no_prefix'):
+
+    if kwargs.get('prefix'):
         msg = "[ [SmokeDetector-ng]({}) ] ".format(config.github) + msg
 
-    if (room._client.host, room.id) in _room_permissions["commands"] and room in _last_messages:
-        if "\n" in msg:
-            room.send_message(":%d %s" % (_last_messages[room].id, msg))
-        else:
-            room.send_message(":%d > %s" % (_last_messages[room].id, msg))
-    else:
-        room.send_message(msg)
+    room.send_message(msg)
 
 
 @require_chat
@@ -122,15 +141,15 @@ def tell_rooms(msg, has, hasnt, **kwargs):
     for prop_has in has:
         for room in _room_permissions[prop_has]:
             if all(map(lambda prop_hasnt: room not in _room_permissions[prop_hasnt], hasnt)):
-                site, roomid = room
+                if room not in _rooms:
+                    site, roomid = room
 
-                if roomid not in _rooms:
                     new_room = _clients[site].get_room(roomid)
                     new_room.join()
 
-                    _rooms[roomid] = new_room
+                    _rooms[room] = new_room
 
-                target_rooms.add(_rooms[roomid])
+                target_rooms.add(_rooms[room])
 
     for room in target_rooms:
         send_to_room(room, msg, **kwargs)
@@ -139,7 +158,8 @@ def tell_rooms(msg, has, hasnt, **kwargs):
 @require_chat
 def handle_start():
     tell_rooms_with("debug", "SmokeDetector-ng started at revision [{}]({}).".format(git.rev()[0:7], config.github
-                                                                                     + "/commit/" + git.rev()[0:40]))
+                                                                                     + "/commit/" + git.rev()[0:40]),
+                                                                                     prefix=True)
 
 
 @require_chat
@@ -153,13 +173,8 @@ def handle_err():
 
 
 @require_chat
-def unwind_prev_messages(room):
-    current = _last_messages[room]
-
-    while current:
-        yield current.id
-
-        current = current.parent
+def get_last_messages(room):
+    return _last_messages[(room._client.host, room.id)]
 
 # This is a hack and we should fix it ASAP.
 import commands

@@ -2,6 +2,7 @@
 __pycache__
 secrets.json
 secrets.json.aes
+pickles/
 
 ### Python template
 # Byte-compiled / optimized / DLL files

@@ -60,17 +60,15 @@ def dispatch_command(msg):
                 return "@%s %s" % (msg.owner.name, function(*args, original_msg=msg))
 
 
-def dispatch_reply_command(msg, command):
-    command_name = command.split(" ", 1)[1]
-
-    if command_name not in _commands["reply"]:
-        return "@%s No such command %s." % (msg.owner.name, command_name)
+def dispatch_reply_command(msg, reply, command):
+    if command not in _commands["reply"]:
+        return "@%s No such command %s." % (reply.owner.name, command)
     else:
-        function, arity = _commands["reply"][command_name]
+        function, arity = _commands["reply"][command]
 
         assert arity == 1
 
-        return "@%s %s" % (msg.owner.name, function(msg.id, original_msg=msg))
+        return "@%s %s" % (reply.owner.name, function(msg.id, original_msg=reply))
 
 
 def dispatch_shorthand_command(msg, room):
@@ -79,17 +77,18 @@ def dispatch_shorthand_command(msg, room):
     output = []
 
     for command in commands:
+        print(command)
         if command.startswith(string.digits):
             count = int(command[0])
             command = command[1:]
         else:
             count = 1
 
-        for message in itertools.islice(chat.unwind_prev_messages(room), count):
+        for message in reversed(chat.get_last_messages(room)[-count:]):
             if command != "-":
-                output.append(dispatch_reply_command(message, command))
+                output.append(dispatch_reply_command(message, msg, command))
 
-    return output.join("\n")
+    return "\n".join(output)
 
 
 @command(int, int, reply=False)
@@ -97,9 +96,9 @@ def add(x, y):
     return "%d and %d makes %d" % (x, y, x + y)
 
 
-@command(int, reply=True)
-def id(x):
-    return "That was message %d" % x
+@command(int, reply=True, whole_msg=True)
+def id(msg, x):
+    return "Your message was %d. My message was %d." % (msg.id, x)
 
 
 @command(reply=False)

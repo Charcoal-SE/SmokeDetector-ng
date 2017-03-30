@@ -22,7 +22,9 @@ _handlers = {
 
 
 def extract_status(exit_code):
-    if exit_code & 128:
-        return SIGNAL, Handler(lambda: _handlers[SIGNAL](exit_code - 128), True)
+    high = exit_code >> 8
+
+    if high:
+        return high, _handlers[high]
     else:
-        return exit_code, handlers[exit_code]
+        return SIGNAL, Handler(lambda: _handlers[SIGNAL].method(exit_code), True)
