@@ -1,12 +1,11 @@
 # vim: set filetype=python tabstop=4 shiftwidth=4 expandtab:
 
-import dulwich.porcelain
-import dulwich.repo
+from dulwich import porcelain, repo
 import re
 
 import config
 
-_repo = dulwich.repo.Repo("..")
+_repo = repo.Repo("..")
 
 
 def rev():
@@ -16,7 +15,7 @@ def rev():
 
 
 def handle_pull():
-    dulwich.porcelain.pull(_repo, remote_location=config.github)
+    porcelain.pull(_repo, remote_location=config.github)
 
 
 def _parse_author(author):
