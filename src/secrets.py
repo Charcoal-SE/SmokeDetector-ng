@@ -68,7 +68,7 @@ def open_store():
 
 
 def secrets_loaded():
-    return _secrets;
+    return _secrets
 
 
 def make_store(plain_filename, cipher_filename):
