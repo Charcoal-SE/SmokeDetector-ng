@@ -89,7 +89,7 @@ def dispatch_shorthand_command(msg, room) -> str:
 
         for _ in range(int(count) if count else 1):
             processed_commands.append(command)
-    
+
     for current_command, message in zip(processed_commands, chat.get_last_messages(room, len(processed_commands))):
         if current_command != "-":
             output.append(dispatch_reply_command(message, msg, current_command))

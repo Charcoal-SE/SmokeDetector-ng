@@ -60,7 +60,6 @@ def open_store():
         for credential in missing_keys:
             secrets[credential] = getpass.getpass(credential + ": ")
 
-
         for key, value in secrets.items():
             globals()[key] = value
 

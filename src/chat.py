@@ -26,6 +26,7 @@ _last_messages = {}
 
 _pickle_run = threading.Event()
 
+
 def require_chat(function):
     def f(*args, **kwargs):
         assert _init
@@ -104,7 +105,7 @@ def on_msg(msg, client, room):
             else:
                 if len(_last_messages) > 50:
                     _last_messages.pop(0)
-                    
+
                 _last_messages[identifier].append(message.id)
 
             _pickle_run.set()
@@ -163,9 +164,9 @@ def tell_rooms(msg, has, hasnt, **kwargs):
 
 @require_chat
 def handle_start():
-    tell_rooms_with("debug", "SmokeDetector-ng started at revision [{}]({}).".format(git.rev()[0:7], config.github
-                                                                                     + "/commit/" + git.rev()[0:40]),
-                                                                                     prefix=True)
+    tell_rooms_with("debug", "SmokeDetector-ng started at revision [{}]({}).".format(git.rev()[0:7], config.github +
+                                                                                     "/commit/" + git.rev()[0:40]),
+                    prefix=True)
 
 
 @require_chat
