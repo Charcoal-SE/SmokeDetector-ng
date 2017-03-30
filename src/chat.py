@@ -102,6 +102,9 @@ def on_msg(msg, client, room):
             if identifier not in _last_messages:
                 _last_messages[identifier] = [message.id]
             else:
+                if len(_last_messages) > 50:
+                    _last_messages.pop(0)
+                    
                 _last_messages[identifier].append(message.id)
 
             _pickle_run.set()
