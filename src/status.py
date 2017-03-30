@@ -14,9 +14,9 @@ PULL = 3
 SIGNAL = 128
 
 _handlers = {
-    ERR:    Handler(handle_err,    True),
-    START:  Handler(handle_start,  True),
-    PULL:   Handler(handle_pull,   False),
+    ERR: Handler(handle_err, True),
+    START: Handler(handle_start, True),
+    PULL: Handler(handle_pull, False),
     SIGNAL: Handler(handle_signal, True)
 }
 

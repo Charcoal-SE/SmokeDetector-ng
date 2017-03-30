@@ -11,7 +11,8 @@ _repo = repo.Repo("..")
 def rev():
     head_commit = _repo.get_object(_repo.head())
 
-    return ("%s by %s - %s" % (head_commit.id.decode("utf-8"), _parse_author(head_commit.author)[0], head_commit.message.decode("utf-8"))).rstrip()
+    return ("%s by %s - %s" % (head_commit.id.decode("utf-8"), _parse_author(head_commit.author)[0],
+                               head_commit.message.decode("utf-8"))).rstrip()
 
 
 def handle_pull():

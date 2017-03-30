@@ -89,4 +89,5 @@ def make_store(plain_filename, cipher_filename):
 if __name__ == "__main__":
     import sys
 
-    make_store("../config/secrets.json" if len(sys.argv) < 2 else sys.argv[1], "../config/secrets.json.aes" if len(sys.argv) < 3 else sys.argv[2])
+    make_store("../config/secrets.json" if len(sys.argv) < 2 else sys.argv[1],
+               "../config/secrets.json.aes" if len(sys.argv) < 3 else sys.argv[2])

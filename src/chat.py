@@ -11,8 +11,8 @@ import secrets
 _init = False
 
 _clients = {
-    "stackexchange.com":      None,
-    #"stackoverflow.com":      None,
+    "stackexchange.com": None,
+    #"stackoverflow.com": None,
     #"meta.stackexchange.com": None
 }
 
@@ -158,5 +158,5 @@ def unwind_prev_messages(room):
 
         current = current.parent
 
-
+# This is a hack and we should fix it ASAP.
 import commands
