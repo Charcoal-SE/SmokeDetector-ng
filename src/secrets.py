@@ -51,14 +51,15 @@ def open_store():
 
         secrets = json.loads(plaintext)
 
-        for credential in _required_credentials:
-            if credential not in secrets:
-                secrets[credential] = getpass.getpass(credential + ": ")
-
+        have_keys = secrets.keys()
+        need_keys = _required_credentials
         if config.require_optional_credentials:
-            for credential in _optional_credentials:
-                if credential not in secrets:
-                    secrets[credential] = getpass.getpass(credential + ": ")
+            need_keys += _optional_credentials
+
+        missing_keys = [x for x in need_keys if x not in have_keys]
+        for credential in missing_keys:
+            secrets[credential] = getpass.getpass(credential + ": ")
+
 
         for key, value in secrets.items():
             globals()[key] = value
