@@ -164,8 +164,8 @@ def tell_rooms(msg, has, hasnt, **kwargs):
 
 @require_chat
 def handle_start():
-    tell_rooms_with("debug", "SmokeDetector-ng started at revision [{}]({}).".format(git.rev()[0:7], config.github +
-                                                                                     "/commit/" + git.rev()[0:40]),
+    tell_rooms_with("debug", "SmokeDetector-ng started at revision [{}]({})."
+                    .format(git.rev()[0:7], config.github + "/commit/" + git.rev()[0:40]),
                     prefix=True)
 
 
