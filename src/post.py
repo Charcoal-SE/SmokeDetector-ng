@@ -67,13 +67,20 @@ class Post:
             # owner's account doesn't exist anymore, no need to post it in chat:
             # http://chat.stackexchange.com/transcript/message/18380776#18380776
             return
-        self._title = data["titleEncodedFancy"]
+
+        element_map = {
+            'titleEncodedFancy': '_title',
+            'bodySummary': '_body',
+            'ownerDisplayName': '_user_name',
+            'url': '_user_url',
+            'id': '_post_id',
+            'siteBaseHostAddress': '_post_site',
+        }
+
+        self._process_element_mapping(element_map, data, is_api_response=False)
+
         self._title = self._unescape_title(self._title)
-        self._body = data["bodySummary"]
-        self._user_name = data["ownerDisplayName"]
-        self._user_url = data["url"]
-        self._post_id = str(data["id"])
-        self._post_site = data["siteBaseHostAddress"]
+        self._post_id = str(self._post_id)
         self._post_site = self._post_site.encode("ascii", errors="replace")
         self._owner_rep = 1
         self._post_score = 0
@@ -119,30 +126,29 @@ class Post:
             'answer_id': '_post_id'
         }
 
+        self._process_element_mapping(element_map, response, is_api_response=True)
+
+        return  # PEP compliance
+
+    def _process_element_mapping(self, element_map: dict, data: dict, is_api_response: bool = False):
         # Take the API response map, and start setting the elements (and sub-elements, where applicable)
         # to the attributes and variables in the object.
         for (element, varmap) in element_map.items():
             try:
-                if element == 'owner':
+                if is_api_response and element == 'owner':
                     for (subelement, subvarmap) in element_map['owner'].items():
                         try:
-                            self[subvarmap] = response['owner'][subelement]
+                            self[subvarmap] = data['owner'][subelement]
                         except KeyError:
                             # Go to next subkey
                             continue
-                        except:
-                            raise
                     continue  # Go to next key because we're done processing the 'owner' key.
-                
+
                 # Other keys
-                self[varmap] = response[element]
+                self[varmap] = data[element]
             except KeyError:
                 # Executes if the 'element' requested isn't part of the response.
                 continue  # Go to next key
-            except:
-                raise
-
-        return  # PEP compliance
 
     @staticmethod
     def _unescape_title(title: str) -> str:

@@ -1,7 +1,7 @@
 # vim: set filetype=python tabstop=4 shiftwidth=4 expandtab:
 
-import re
 import string
+from typing import Union
 
 import config
 import chat
@@ -10,9 +10,12 @@ import status
 _commands = {"reply": {}, "prefix": {}}
 
 
+# noinspection PyShadowingNames,PyShadowingBuiltins,PyMissingTypeHints
 def command(*type_signature, reply=False, whole_msg=False):
+    # noinspection PyMissingTypeHints
     def decorator(func):
-        def f(*args, original_msg=None):
+        # noinspection PyShadowingBuiltins
+        def f(*args, original_msg=None) -> Union[function, object]:
             processed_args = [type(arg) for type, arg in zip(type_signature, args)]
 
             if whole_msg:
@@ -30,13 +33,15 @@ def command(*type_signature, reply=False, whole_msg=False):
     return decorator
 
 
-def dispatch_command(msg):
+# noinspection PyShadowingNames,PyShadowingBuiltins
+def dispatch_command(msg) -> Union[object, function, str]:
     command_parts = msg.content.split(" ", 1)
 
     if len(command_parts) == 2:
         command, args = command_parts
     else:
-        command, = command_parts
+        command = command_parts
+        args = ""
 
     command_name = command[len(config.command_prefix):]
 
@@ -60,7 +65,8 @@ def dispatch_command(msg):
                 return "@%s %s" % (msg.owner.name, function(*args, original_msg=msg))
 
 
-def dispatch_reply_command(msg, reply, command):
+# noinspection PyShadowingNames,PyShadowingBuiltins
+def dispatch_reply_command(msg, reply, command) -> str:
     if command not in _commands["reply"]:
         return "@%s No such command %s." % (reply.owner.name, command)
     else:
@@ -71,7 +77,8 @@ def dispatch_reply_command(msg, reply, command):
         return "@%s %s" % (reply.owner.name, function(msg.id, original_msg=reply))
 
 
-def dispatch_shorthand_command(msg, room):
+# noinspection PyShadowingNames,PyShadowingBuiltins
+def dispatch_shorthand_command(msg, room) -> str:
     commands = msg.content[len(config.shorthand_prefix):].split()
 
     output = []
@@ -91,20 +98,21 @@ def dispatch_shorthand_command(msg, room):
 
 
 @command(int, int, reply=False)
-def add(x, y):
+def add(x, y) -> str:
     return "%d and %d makes %d" % (x, y, x + y)
 
 
+# noinspection PyShadowingBuiltins
 @command(int, reply=True, whole_msg=True)
 def id(msg, x):
     return "Your message was %d. My message was %d." % (msg.id, x)
 
 
 @command(reply=False)
-def pull():
-    os.exit(status.PULL)
+def pull() -> None:
+    exit(status.PULL)
 
 
 @command(reply=False)
-def location():
+def location() -> Union[str, object]:
     return config.location
