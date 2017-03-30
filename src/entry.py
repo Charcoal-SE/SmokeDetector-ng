@@ -7,7 +7,7 @@ import ws
 
 
 def start(handler):
-    if not secrets._secrets:
+    if not secrets.secrets_loaded():
         print("Secret store not already open: started without daemon?")
         secrets.open_store()
 
