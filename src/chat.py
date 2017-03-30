@@ -12,8 +12,8 @@ _init = False
 
 _clients = {
     "stackexchange.com": None,
-    #"stackoverflow.com": None,
-    #"meta.stackexchange.com": None
+    "stackoverflow.com": None,
+    "meta.stackexchange.com": None
 }
 
 _room_permissions = None
