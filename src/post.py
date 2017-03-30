@@ -10,7 +10,7 @@ class Post:
     _is_answer = False
     _owner_rep = 1
     _parent = None
-    _post_id = ""
+    _post_id = "0"
     _post_score = 0
     _post_site = ""
     _post_url = ""
@@ -42,6 +42,13 @@ class Post:
                    'is_answer=' + str(self.is_answer), 'body_is_summary=' + str(self.body_is_summary),
                    'owner_rep=' + str(self.owner_rep), 'post_score=' + str(self.post_score)]
         return "%s(%s)" % (type_name, ', '.join(dataset))
+
+    def __setitem__(self, key: str, item: Union[int, bool, str, object]) -> None:
+        setattr(self, key, item)
+        return  # PEP compliance
+
+    def __getitem__(self, item: str) -> object:
+        return getattr(self, item)
 
     def _get_title_ignore_type(self) -> str:
         return self.parent.title if self.is_answer else self.title
@@ -95,8 +102,9 @@ class Post:
 
         if "BodyIsSummary" in response and response["BodyIsSummary"] is True:
             self._body_is_summary = True
-            
-        elements = {
+
+        # Map response elements to the corresponding variable for the Post object internally.
+        element_map = {
             'site': '_post_site',
             'link': '_post_url',
             'score': '_post_score',
@@ -106,63 +114,33 @@ class Post:
                 'display_name': '_user_name',
                 'link': '_user_url',
                 'reputation': '_owner_rep'
-               },
-             'question_id': '_post_id', 
-             'answer_id': '_post_id'
-            }
-        
-        for (key, var) in elements.iterkeys():
+            },
+            'question_id': '_post_id',
+            'answer_id': '_post_id'
+        }
+
+        # Take the API response map, and start setting the elements (and sub-elements, where applicable)
+        # to the attributes and variables in the object.
+        for (element, varmap) in element_map.items():
             try:
-                if key == 'owner':
-                    for subkey in elements['owner'].iterkeys():
+                if element == 'owner':
+                    for (subelement, subvarmap) in element_map['owner'].items():
                         try:
-                            # code
-                        except:  # Improve this except later
-                            continue  # Go to next subkey
+                            self[subvarmap] = response['owner'][subelement]
+                        except KeyError:
+                            # Go to next subkey
+                            continue
+                        except:
+                            raise
                     continue  # Go to next key because we're done processing the 'owner' key.
                 
                 # Other keys
-                #code
-            except:  # Improve this except later
+                self[varmap] = response[element]
+            except KeyError:
+                # Executes if the 'element' requested isn't part of the response.
                 continue  # Go to next key
-
-        if 'site' in response:
-            self._post_site = response['site']
-
-        if 'link' in response:
-            self._post_url = response["link"]
-
-        if 'score' in response:
-            self._post_score = response["score"]
-
-        if 'up_vote_count' in response:
-            self._votes['upvotes'] = response["up_vote_count"]
-
-        if 'down_vote_count' in response:
-            self._votes['downvotes'] = response["down_vote_count"]
-
-        if 'owner' in response:
-            if 'display_name' in response['owner']:
-                self._user_name = html.unescape(response["owner"]["display_name"])
-
-            if 'link' in response['owner']:
-                self._user_url = response["owner"]["link"]
-
-            if 'reputation' in response['owner']:
-                self._owner_rep = response["owner"]["reputation"]
-            else:
-                self._owner_rep = 0
-
-        # noinspection PyBroadException
-        try:
-            if 'question_id' in response:
-                self._post_id = str(response["question_id"])
-            elif 'answer_id' in response:
-                self._post_id = str(response["answer_id"])
-            else:
-                self._post_id = str(0)
-        except:
-            self._post_id = 0
+            except:
+                raise
 
         return  # PEP compliance
 
