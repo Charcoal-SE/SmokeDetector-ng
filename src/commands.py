@@ -5,6 +5,7 @@ import status
 
 from command_dispatch import command
 
+
 @command(int, int, reply=False)
 def add(x, y) -> str:
     return "%d and %d makes %d" % (x, y, x + y)
