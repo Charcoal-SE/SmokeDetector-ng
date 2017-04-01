@@ -1,6 +1,7 @@
 # vim: set filetype=python tabstop=4 shiftwidth=4 expandtab:
 
 import chat
+import commands
 import secrets
 import status
 import ws

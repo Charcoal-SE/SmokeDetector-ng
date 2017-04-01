@@ -8,6 +8,7 @@ import os.path
 import pickle
 import threading
 
+import command_dispatch
 import config
 import git
 import secrets
@@ -112,11 +113,11 @@ def on_msg(msg, client, room):
         elif message.parent and message.parent.owner.id in config.my_ids:
             command = message.content.split(" ", 1)[1]
 
-            send_to_room(room, commands.dispatch_reply_command(message.parent, message, command))
+            send_to_room(room, command_dispatch.dispatch_reply_command(message.parent, message, command))
         elif message.content.startswith(config.shorthand_prefix):
-            send_to_room(room, commands.dispatch_shorthand_command(message, room))
+            send_to_room(room, command_dispatch.dispatch_shorthand_command(message, room))
         elif message.content.startswith(config.command_prefix):
-            send_to_room(room, commands.dispatch_command(message))
+            send_to_room(room, command_dispatch.dispatch_command(message))
 
 
 @require_chat
@@ -183,7 +184,3 @@ def handle_err():
 def get_last_messages(room, count):
     for msg_id in itertools.islice(reversed(_last_messages[(room._client.host, room.id)]), count):
         yield room._client.get_message(msg_id)
-
-
-# This is a hack and we should fix it ASAP.
-import commands
