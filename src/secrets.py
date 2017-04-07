@@ -27,7 +27,7 @@ _secrets = False
 def require_secrets(function):
     def f(*args, **kwargs):
         assert _secrets
-        function(*args, **kwargs)
+        return function(*args, **kwargs)
 
     return f
 
