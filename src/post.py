@@ -1,7 +1,7 @@
 import chat
 import html
 import json
-from typing import TypeVar, Union
+from typing import Any, Union
 
 
 class Post:
@@ -19,7 +19,7 @@ class Post:
     _user_url = ""
     _votes = {'downvotes': None, 'upvotes': None}
 
-    def __init__(self, json_data: str = None, api_response: dict = None, parent: PostType = None) -> None:
+    def __init__(self, json_data: str = None, api_response: dict = None, parent: Any = None) -> None:
         if parent is not None:
             if not isinstance(parent, Post):
                 raise TypeError("Parent object for a Post object must also be a Post object.")
@@ -179,7 +179,7 @@ class Post:
         return int(self._owner_rep)
 
     @property
-    def parent(self) -> PostType:
+    def parent(self) -> Any:
         return self._parent
 
     @property
@@ -230,5 +230,3 @@ class Post:
     @property
     def title_ignore_type(self) -> str:
         return self._get_title_ignore_type()
-
-PostType = TypeVar('Post', Post)
