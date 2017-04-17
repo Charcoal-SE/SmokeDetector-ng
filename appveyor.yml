@@ -1,11 +1,12 @@
 environment:
   matrix:
     - PYTHON: "C:\\Python35-x64"
+    - PYTHON: "C:\\Python36-x64"
 
 install:
-  - "C:\\Python35-x64\\python -m pip install -r requirements.txt --upgrade"
+  - "$(PYTHON)\\python -m pip install -r requirements.txt --upgrade"
 
 build: false
 
 test_script:
-  - "C:\\Python35-x64\\python -m pytest --disable-pytest-warnings test"
+  - "$(PYTHON)\\python -m pytest --disable-pytest-warnings test"
