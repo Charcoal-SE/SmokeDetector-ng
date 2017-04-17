@@ -16,7 +16,7 @@ def rev():
 
 
 def handle_pull():
-    porcelain.pull(_repo, remote_location=config.github)
+    porcelain.pull(_repo, remote_location=config.github + ".git")
 
 
 def _parse_author(author):

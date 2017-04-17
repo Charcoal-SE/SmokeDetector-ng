@@ -1,6 +1,6 @@
 {
   "require_optional_credentials": 0,
-  "github": "https://github.com/Charcoal-SE/SmokeDetector-ng.git",
+  "github": "https://github.com/Charcoal-SE/SmokeDetector-ng",
   "shorthand_prefix": "sd ",
   "command_prefix": "!!/",
   "my_ids": [172727],
