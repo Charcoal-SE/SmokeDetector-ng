@@ -8,4 +8,4 @@ dependencies:
 
 test:
   override:
-    - python3.5 -W default::Warning -m pytest test
+    - python3.5 -m pytest --disable-pytest-warnings test

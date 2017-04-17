@@ -10,4 +10,4 @@ install:
 build: false
 
 test_script:
-  - "C:\\Python\\python -W default::Warning -m pytest test"
+  - "C:\\Python\\python -m pytest --disable-pytest-warnings test"
