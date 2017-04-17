@@ -9,4 +9,4 @@ def spam_test_1(post):
         return ""
 
 
-regex_spam_check(r"\bvashikaran\Wspecialist\b", name="Bad keyword in %s", all=True, max_rep=50, max_score=2, body=True)
+regex_spam_check(r"\bvashikaran\Wspecialist\b", name="Bad keyword in post", all=True, max_rep=50, max_score=2, body=True)
