@@ -105,8 +105,8 @@ def on_msg(msg, client, room):
             if identifier not in _last_messages:
                 _last_messages[identifier] = collections.deque((message.id,))
             else:
-                if len(_last_messages) > 50:
-                    _last_messages.popleft()
+                if len(_last_messages[identifier]) > 50:
+                    _last_messages[identifier].popleft()
 
                 _last_messages[identifier].append(message.id)
 
