@@ -1,0 +1,13 @@
+environment:
+  matrix:
+    - PYTHON: "C:\\Python"
+      PYTHON_VERSION: "3.5.x"
+      PYTHON_ARCH: "64"
+
+install:
+  - "C:\\Python\\python -m pip install -r requirements.txt --upgrade"
+
+build: false
+
+test_script:
+  - "C:\\Python\\python -m pytest test"
