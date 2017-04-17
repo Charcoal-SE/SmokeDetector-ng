@@ -24,10 +24,10 @@ def spam_check(name="Missingno.", all=False, sites=set(), max_rep=10, max_score=
     return decorator
 
 
-def regex_spam_check(regex, name="Missingno.", sites=(False, set()), max_rep=10, max_score=1, **types):
+def regex_spam_check(regex, name="Missingno.", all=False, sites=set(), max_rep=10, max_score=1, **types):
     compiled_regex = re.compile(regex)
 
-    @spam_check(name=name, sites=sites, max_rep=max_rep, max_score=1)
+    @spam_check(name=name, all=all, sites=sites, max_rep=max_rep, max_score=max_score)
     def check(post):
         reasons = []
 
