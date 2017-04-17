@@ -2,6 +2,7 @@
 
 import chatexchange.client
 import chatexchange.events
+import collections
 import itertools
 import json
 import os.path
@@ -102,10 +103,10 @@ def on_msg(msg, client, room):
             identifier = (client.host, room.id)
 
             if identifier not in _last_messages:
-                _last_messages[identifier] = [message.id]
+                _last_messages[identifier] = collections.deque((message.id,))
             else:
                 if len(_last_messages) > 50:
-                    _last_messages.pop(0)
+                    _last_messages.popleft()
 
                 _last_messages[identifier].append(message.id)
 
