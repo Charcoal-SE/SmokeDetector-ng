@@ -11,7 +11,7 @@ before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install zoidbergwill/python/python35; fi
 
 install:
-  - pip install -r requirements.txt --upgrade
+  - pip3.5 install -r requirements.txt --upgrade
 
 script:
   - python3.5 -m pytest --disable-pytest-warnings test
