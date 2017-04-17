@@ -5,9 +5,11 @@ machine:
 dependencies:
   pre:
     - if [ $CIRCLE_NODE_INDEX == "1" ] ; then pyenv global 3.6.1 ; fi
-  override:
+  post:
     - case $CIRCLE_NODE_INDEX in 0) pyenv local 3.5.2 ;; 1) pyenv local 3.6.1 ;; esac
-    - pip install -r requirements.txt --upgrade
+    - if [ $CIRCLE_NODE_INDEX == "1" ] ; then pyenv local 3.6.1 ; fi
+    - case $CIRCLE_NODE_INDEX in 0) pip3.5 install -r requirements.txt --upgrade ;; 1) pip3.6 install -r requirements.txt --upgrade ;; esac
+
 test:
   override:
     - case $CIRCLE_NODE_INDEX in 0) python3.5 -m pytest --disable-pytest-warnings test ;; 1) python3.6 -m pytest --disable-pytest-warnings test ;; esac:
