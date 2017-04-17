@@ -1,6 +1,6 @@
 # vim: set filetype=python tabstop=4 shiftwidth=4 expandtab:
 
-import re
+import regex
 
 import config
 import chat
@@ -93,7 +93,7 @@ def dispatch_shorthand_command(msg, room) -> str:
     processed_commands = []
 
     for command in commands:
-        count, command = re.match(r"^(\d*)(.*)", command).groups()
+        count, command = regex.match(r"^(\d*)(.*)", command).groups()
 
         for _ in range(int(count) if count else 1):
             processed_commands.append(command)

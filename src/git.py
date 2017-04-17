@@ -1,7 +1,7 @@
 # vim: set filetype=python tabstop=4 shiftwidth=4 expandtab:
 
 from dulwich import porcelain, repo
-import re
+import regex
 
 import config
 
@@ -20,4 +20,4 @@ def handle_pull():
 
 
 def _parse_author(author):
-    return re.findall("(.*?) <(.*?)>", author.decode("utf-8"))[0]
+    return regex.findall("(.*?) <(.*?)>", author.decode("utf-8"))[0]

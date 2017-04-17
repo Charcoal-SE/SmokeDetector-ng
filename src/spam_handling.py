@@ -1,6 +1,6 @@
 # vim: set filetype=python tabstop=4 shiftwidth=4 expandtab:
 
-import re
+import regex
 
 _spam_checks = []
 
@@ -25,7 +25,7 @@ def spam_check(name="Missingno.", all=False, sites=set(), max_rep=10, max_score=
 
 
 def regex_spam_check(regex, name="Missingno.", all=False, sites=set(), max_rep=10, max_score=1, **types):
-    compiled_regex = re.compile(regex)
+    compiled_regex = regex.compile(regex)
 
     @spam_check(name=name, all=all, sites=sites, max_rep=max_rep, max_score=max_score)
     def check(post):
@@ -33,7 +33,7 @@ def regex_spam_check(regex, name="Missingno.", all=False, sites=set(), max_rep=1
 
         for key, value in types.items():
             if value:
-                match = re.search(compiled_regex, post[key])
+                match = regex.search(compiled_regex, post[key])
 
                 if match:
                     reasons.append("%s: %r" % (key, match))
