@@ -4,9 +4,9 @@ environment:
     - PYTHON: "C:\\Python36-x64"
 
 install:
-  - "$(PYTHON)\\python -m pip install -r requirements.txt --upgrade"
+  - "%PYTHON%\\python -m pip install -r requirements.txt --upgrade"
 
 build: false
 
 test_script:
-  - "$(PYTHON)\\python -m pytest --disable-pytest-warnings test"
+  - "%PYTHON%\\python -m pytest --disable-pytest-warnings test"
