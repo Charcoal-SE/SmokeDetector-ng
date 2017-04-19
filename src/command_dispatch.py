@@ -32,7 +32,7 @@ def command(*type_signature, reply=False, whole_msg=False, aliases=[]):
             _commands["prefix"][func.__name__] = command
 
             for alias in aliases:
-                _commands["reply"][alias] = command
+                _commands["prefix"][alias] = command
 
         return f
 
