@@ -12,20 +12,20 @@ def spam_check(name="Missingno.", all=False, sites=set(), max_rep=10, max_score=
                 reason = func(post)
 
                 if reason:
-                    return True, ["%s: %s" % (name, reason)]
+                    return True, "%s: %s" % (name, reason)
                 else:
                     return False, ""
             else:
                 return False, ""
 
-        _spam_checks.append(check)
+        _spam_checks.append((name, check))
         return check
 
     return decorator
 
 
-def regex_spam_check(regex, name="Missingno.", all=False, sites=set(), max_rep=10, max_score=1, **types):
-    compiled_regex = regex.compile(regex)
+def regex_spam_check(re, name="Missingno.", all=False, sites=set(), max_rep=10, max_score=1, **types):
+    compiled_regex = regex.compile(re)
 
     @spam_check(name=name, all=all, sites=sites, max_rep=max_rep, max_score=max_score)
     def check(post):
@@ -44,15 +44,14 @@ def regex_spam_check(regex, name="Missingno.", all=False, sites=set(), max_rep=1
 
 
 def check_if_spam(post):
-    is_spam = False
     reasons = []
+    why = []
 
-    for check in _spam_checks:
+    for name, check in _spam_checks:
         result, reason = check(post)
 
-        if not is_spam and result:
-            is_spam = True
+        if result:
+            reasons.append(name)
+            why.append(reason)
 
-        reasons.extend(reason)
-
-    return is_spam, reasons
+    return reasons, why
