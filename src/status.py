@@ -22,6 +22,9 @@ _handlers = {
 
 
 def extract_status(exit_code):
+    if not exit_code:
+        return END, None
+
     high = exit_code >> 8
 
     if high:
