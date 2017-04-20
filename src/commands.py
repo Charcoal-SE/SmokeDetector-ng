@@ -1,5 +1,6 @@
 # vim: set filetype=python tabstop=4 shiftwidth=4 expandtab:
 
+import os
 import random
 
 import config
@@ -21,7 +22,7 @@ def id(msg, x):
 
 @command(reply=False)
 def pull() -> None:
-    exit(status.PULL)
+    os._exit(status.PULL)
 
 
 @command(reply=False)
@@ -50,4 +51,4 @@ def blame2(msg, x) -> str:
 
 @command(reply=False)
 def stappit() -> None:
-    exit(status.END)
+    os._exit(status.END)
