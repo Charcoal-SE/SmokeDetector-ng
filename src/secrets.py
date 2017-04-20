@@ -1,9 +1,9 @@
 # vim: set filetype=python tabstop=4 shiftwidth=4 expandtab:
 
-import Crypto.Cipher
-import Crypto.Hash
-import Crypto.Random
-import Crypto.Util
+import Cryptodome.Cipher.AES
+import Cryptodome.Hash.SHA256
+import Cryptodome.Random
+import Cryptodome.Util.Counter
 import getpass
 import json
 
@@ -35,7 +35,7 @@ def require_secrets(function):
 def open_store():
     global _secrets
 
-    sha256 = Crypto.Hash.SHA256.new()
+    sha256 = Cryptodome.Hash.SHA256.new()
     sha256.update(getpass.getpass("Store password: ").encode("utf-8"))
 
     key = sha256.digest()
@@ -44,8 +44,8 @@ def open_store():
         nonce = store_file.read(8)
         ciphertext = store_file.read()
 
-        counter = Crypto.Util.Counter.new(64, prefix=nonce)
-        decrypt = Crypto.Cipher.AES.new(key, Crypto.Cipher.AES.MODE_CTR, counter=counter)
+        counter = Cryptodome.Util.Counter.new(64, prefix=nonce)
+        decrypt = Cryptodome.Cipher.AES.new(key, Cryptodome.Cipher.AES.MODE_CTR, counter=counter)
 
         plaintext = decrypt.decrypt(ciphertext).decode("utf-8")
 
@@ -71,18 +71,18 @@ def secrets_loaded():
 
 
 def make_store(plain_filename, cipher_filename):
-    sha256 = Crypto.Hash.SHA256.new()
+    sha256 = Cryptodome.Hash.SHA256.new()
     sha256.update(getpass.getpass("Store password: ").encode("utf-8"))
 
     key = sha256.digest()
 
     with open(plain_filename, "r") as plaintext_file:
         with open(cipher_filename, "wb") as ciphertext_file:
-            nonce = Crypto.Random.get_random_bytes(8)
+            nonce = Cryptodome.Random.get_random_bytes(8)
             plaintext = plaintext_file.read()
 
-            counter = Crypto.Util.Counter.new(64, prefix=nonce)
-            encrypt = Crypto.Cipher.AES.new(key, Crypto.Cipher.AES.MODE_CTR, counter=counter)
+            counter = Cryptodome.Util.Counter.new(64, prefix=nonce)
+            encrypt = Cryptodome.Cipher.AES.new(key, Cryptodome.Cipher.AES.MODE_CTR, counter=counter)
 
             ciphertext_file.write(nonce)
             ciphertext_file.write(encrypt.encrypt(plaintext))
