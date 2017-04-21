@@ -27,7 +27,7 @@ before_install:
     fi
 
 install:
-  - pip3.5 install -r requirements.txt --upgrade
+  - pip3 install -r requirements.txt --upgrade
 
 script:
-  - python3.5 -m pytest --disable-pytest-warnings test
+  - python3 -m pytest --disable-pytest-warnings test
