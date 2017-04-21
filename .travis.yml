@@ -4,14 +4,30 @@ matrix:
       language: python
       sudo: false
       python: 3.5
+    - os: linux
+      language: python
+      sudo: false
+      python: 3.6
     - os: osx
       language: generic
+      env:
+        - PYTHON36=0
+    - os: osx
+      language: generic
+      env:
+        - PYTHON36=1
 
 before_install:
-  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then brew install zoidbergwill/python/python35; fi
+  - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
+      if [[ "$PYTHON36" == 1 ]]; then
+        brew install python3;
+      else
+        brew install zoidbergwill/python/python35;
+      fi;
+    fi
 
 install:
-  - pip3.5 install -r requirements.txt --upgrade
+  - python3 -m pip install -r requirements.txt --upgrade
 
 script:
-  - python3.5 -m pytest --disable-pytest-warnings test
+  - python3 -m pytest --disable-pytest-warnings test
