@@ -20,10 +20,10 @@ matrix:
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
       if [[ "$PYTHON36" == 1 ]]; then
-        brew install python
+        brew install python;
       else
-        brew install zoidbergwill/python/python35
-      fi
+        brew install zoidbergwill/python/python35;
+      fi;
     fi
 
 install:
