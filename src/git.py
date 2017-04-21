@@ -9,7 +9,15 @@ _repo = repo.Repo("..")
 
 
 def rev():
-    head_commit = _repo.get_object(_repo.head())
+    return _head_commit().id.decode("utf-8")
+
+
+def short_rev():
+    return rev()[:7]
+
+
+def pretty_rev():
+    head_commit = _head_commit()
 
     return ("%s by %s - %s" % (head_commit.id.decode("utf-8"), _parse_author(head_commit.author)[0],
                                head_commit.message.decode("utf-8"))).rstrip()
@@ -17,6 +25,10 @@ def rev():
 
 def handle_pull():
     porcelain.pull(_repo, remote_location=config.github + ".git")
+
+
+def _head_commit():
+    return _repo.get_object(_repo.head())
 
 
 def _parse_author(author):
