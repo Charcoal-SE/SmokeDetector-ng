@@ -40,7 +40,7 @@ class BlacklistedUser(Base):
               for the checked user, or None if the user is not blacklisted.
     """
     @staticmethod
-    def is_blacklisted(site_url: str, user_id: int) -> [bool, typing.Optional['BlacklistedUser']]:
+    def is_blacklisted(site_url: str, user_id: int) -> (bool, typing.Optional['BlacklistedUser']):
         try:
             return True, SESSION.query(BlacklistedUser)\
                                 .filter(BlacklistedUser.site_url == site_url, BlacklistedUser.user_id == user_id)\
@@ -64,10 +64,11 @@ class BodyfetcherMaxId(Base):
     Given a site URL, retrieves the latest max ID record for the site.
     
     :param site: a string containing the SE site URL, as it would have been inserted into the database.
-    :returns: A BodyfetcherMaxId instance representing the latest max ID record for the specified site.
+    :returns: A BodyfetcherMaxId instance representing the latest max ID record for the specified site, or None if no 
+              record was found.
     """
     @staticmethod
-    def by_site(site: str) -> 'BodyfetcherMaxId':
+    def by_site(site: str) -> typing.Optional['BodyfetcherMaxId']:
         return SESSION.query(BodyfetcherMaxId).filter(BodyfetcherMaxId.site_url == site)\
                       .order_by(desc(BodyfetcherMaxId.id)).first()
 
