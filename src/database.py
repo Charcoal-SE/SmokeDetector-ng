@@ -4,6 +4,7 @@ from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
+import inspect
 
 DB_PATH = os.path.abspath(os.path.join(os.path.abspath(os.path.dirname(__file__)), '../data/database.sqlite3'))
 
@@ -19,6 +20,14 @@ class BaseModel:
         instance = cls(**kwargs)
         SESSION.add(instance)
         SESSION.commit()
+
+    def __repr__(self):
+        field_names = [x for x in dir(self.__class__) if x[0] != '_' and not
+                       inspect.ismethod(getattr(self.__class__, x))]
+        field_values = [getattr(self, x).__repr__() for x in field_names]
+        fields = dict(zip(field_names, field_values))
+        field_str = ", ".join(["{}={}".format(k, v) for k, v in fields.items()])
+        return "<{}: {}>".format(self.__class__.__name__, field_str)
 
 
 class AutoIgnoredPost(Base, BaseModel):
