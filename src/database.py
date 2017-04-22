@@ -13,7 +13,15 @@ Session = sessionmaker(bind=ENGINE)
 SESSION = Session()
 
 
-class AutoIgnoredPost(Base):
+class BaseModel:
+    @classmethod
+    def create(cls, **kwargs):
+        instance = cls(**kwargs)
+        SESSION.add(instance)
+        SESSION.commit()
+
+
+class AutoIgnoredPost(Base, BaseModel):
     __tablename__ = 'auto_ignored_posts'
 
     id = Column(Integer, primary_key=True)
@@ -22,7 +30,7 @@ class AutoIgnoredPost(Base):
     ignored_date = Column(DateTime)
 
 
-class BlacklistedUser(Base):
+class BlacklistedUser(Base, BaseModel):
     __tablename__ = 'blacklisted_users'
 
     id = Column(Integer, primary_key=True)
@@ -53,7 +61,7 @@ class BlacklistedUser(Base):
                                 .order_by(desc(BlacklistedUser.id)).first()
 
 
-class BodyfetcherMaxId(Base):
+class BodyfetcherMaxId(Base, BaseModel):
     __tablename__ = 'bodyfetcher_max_ids'
 
     id = Column(Integer, primary_key=True)
@@ -73,7 +81,7 @@ class BodyfetcherMaxId(Base):
                       .order_by(desc(BodyfetcherMaxId.id)).first()
 
 
-class BodyfetcherQueueItem(Base):
+class BodyfetcherQueueItem(Base, BaseModel):
     __tablename__ = 'bodyfetcher_queue'
 
     id = Column(Integer, primary_key=True)
@@ -92,7 +100,7 @@ class BodyfetcherQueueItem(Base):
         return SESSION.query(BodyfetcherQueueItem).filter(BodyfetcherQueueItem.site_url == site).all()
 
 
-class BodyfetcherQueueTiming(Base):
+class BodyfetcherQueueTiming(Base, BaseModel):
     __tablename__ = 'bodyfetcher_queue_timings'
 
     id = Column(Integer, primary_key=True)
@@ -113,7 +121,7 @@ class BodyfetcherQueueTiming(Base):
                 SESSION.query(BodyfetcherQueueTiming).filter(BodyfetcherQueueTiming.site_url == site).all()]
 
 
-class FalsePositive(Base):
+class FalsePositive(Base, BaseModel):
     __tablename__ = 'false_positives'
 
     id = Column(Integer, primary_key=True)
@@ -121,7 +129,7 @@ class FalsePositive(Base):
     post_id = Column(Integer)
 
 
-class IgnoredPost(Base):
+class IgnoredPost(Base, BaseModel):
     __tablename__ = 'ignored_posts'
 
     id = Column(Integer, primary_key=True)
@@ -129,7 +137,7 @@ class IgnoredPost(Base):
     post_id = Column(Integer)
 
 
-class SmokeyMessage(Base):
+class SmokeyMessage(Base, BaseModel):
     __tablename__ = 'smokey_messages'
 
     id = Column(Integer, primary_key=True)
@@ -138,7 +146,7 @@ class SmokeyMessage(Base):
     message_id = Column(Integer)
 
 
-class Notification(Base):
+class Notification(Base, BaseModel):
     __tablename__ = 'notifications'
 
     id = Column(Integer, primary_key=True)
@@ -148,7 +156,7 @@ class Notification(Base):
     site_url = Column(String(100))
 
 
-class WhitelistedUser(Base):
+class WhitelistedUser(Base, BaseModel):
     __tablename__ = 'whitelisted_users'
 
     id = Column(Integer, primary_key=True)
@@ -156,7 +164,7 @@ class WhitelistedUser(Base):
     user_id = Column(Integer)
 
 
-class WhyDatum(Base):
+class WhyDatum(Base, BaseModel):
     __tablename__ = 'why_data'
 
     id = Column(Integer, primary_key=True)
