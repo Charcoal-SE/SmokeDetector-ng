@@ -85,7 +85,7 @@ def make_store(plain_filename, cipher_filename):
             encrypt = Cryptodome.Cipher.AES.new(key, Cryptodome.Cipher.AES.MODE_CTR, counter=counter)
 
             ciphertext_file.write(nonce)
-            ciphertext_file.write(encrypt.encrypt(plaintext))
+            ciphertext_file.write(encrypt.encrypt(plaintext.encode("utf-8")))
 
     print("Make sure to delete " + plain_filename)
 
