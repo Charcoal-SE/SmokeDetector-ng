@@ -43,6 +43,7 @@ def init():
     global _init
     global _room_permissions
     global _rooms
+    global _last_messages
 
     for site in _clients.keys():
         client = chatexchange.client.Client(site)
