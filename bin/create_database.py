@@ -1,3 +1,4 @@
+import os
 import os.path
 import sys
 import inspect
@@ -5,6 +6,10 @@ import inspect
 # Haaaaaaaaaaack.
 sys.path.append(os.path.abspath('../src'))
 import database
+
+if os.path.basename(os.getcwd()) != 'bin':
+    print("E: Can't import database module from {}. Run create_database.py from the bin/ directory."
+          .format(os.getcwd()))
 
 models = []
 for name, obj in inspect.getmembers(sys.modules[database.__name__]):
