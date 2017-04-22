@@ -1,7 +1,6 @@
 import os.path
 import sys
 import inspect
-from sqlalchemy import create_engine
 
 # Haaaaaaaaaaack.
 sys.path.append(os.path.abspath('../src'))
@@ -14,6 +13,14 @@ for name, obj in inspect.getmembers(sys.modules[database.__name__]):
 
 print("Found models: {}".format(', '.join(models)))
 
+if not os.path.isdir(database.basedir):
+    os.mkdir(database.basedir)
+    print("Made directory {}".format(database.basedir))
+
+if not os.path.isfile(database.DB_PATH):
+    with open(database.DB_PATH, 'w+') as f:
+        print("Created database file {}".format(database.DB_PATH))
+        f.close()
+
 print("Creating tables...")
-relative_engine = create_engine('sqlite:///../data/database.sqlite3')
-database.Base.metadata.create_all(relative_engine)
+database.Base.metadata.create_all(database.ENGINE)
