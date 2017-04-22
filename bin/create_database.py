@@ -1,15 +1,15 @@
-import os
+from os import path, getcwd, mkdir
 import os.path
 import sys
 import inspect
 
 # Haaaaaaaaaaack.
-sys.path.append(os.path.abspath('../src'))
+sys.path.append(path.abspath('../src'))
 import database
 
-if os.path.basename(os.getcwd()) != 'bin':
+if os.path.basename(getcwd()) != 'bin':
     print("E: Can't import database module from {}. Run create_database.py from the bin/ directory."
-          .format(os.getcwd()))
+          .format(getcwd()))
 
 models = []
 for name, obj in inspect.getmembers(sys.modules[database.__name__]):
@@ -18,11 +18,11 @@ for name, obj in inspect.getmembers(sys.modules[database.__name__]):
 
 print("Found models: {}".format(', '.join(models)))
 
-if not os.path.isdir(database.basedir):
-    os.mkdir(database.basedir)
-    print("Made directory {}".format(database.basedir))
+if not path.isdir(path.dirname(database.DB_PATH)):
+    mkdir(database.basedir)
+    print("Made directory {}".format(path.dirname(database.DB_PATH)))
 
-if not os.path.isfile(database.DB_PATH):
+if not path.isfile(database.DB_PATH):
     with open(database.DB_PATH, 'w+') as f:
         print("Created database file {}".format(database.DB_PATH))
         f.close()
