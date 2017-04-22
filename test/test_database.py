@@ -6,7 +6,7 @@ from src.database import *
 
 def setup_module(module):
     # Initialize the database and actually create tables before we start querying
-    module.Base.metadata.create_all(module.ENGINE)
+    module.initialize_new()
 
 def test_basemodel_create():
     aip_before_count = SESSION.query(AutoIgnoredPost).count()

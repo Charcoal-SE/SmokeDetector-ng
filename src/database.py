@@ -1,3 +1,4 @@
+import os
 import os.path
 import typing
 from sqlalchemy import *
@@ -12,6 +13,16 @@ ENGINE = create_engine('sqlite:////' + DB_PATH)
 Base = declarative_base()
 Session = sessionmaker(bind=ENGINE)
 SESSION = Session()
+
+def initialize_new():
+    if not os.path.isdir(os.path.dirname(DB_PATH)):
+        os.mkdir(os.path.dirname(DB_PATH))
+
+    if not os.path.isfile(DB_PATH):
+        with open(DB_PATH, 'w+') as f:
+            f.close()
+
+    Base.metadata.create_all(ENGINE)
 
 
 class BaseModel:
