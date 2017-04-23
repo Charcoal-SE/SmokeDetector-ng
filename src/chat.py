@@ -119,7 +119,7 @@ def on_msg(msg, client, room):
         elif message.content.startswith(config.shorthand_prefix):
             message.reply(command_dispatch.dispatch_shorthand_command(message, room))
         elif message.content.startswith(config.command_prefix):
-            message.reply(room, command_dispatch.dispatch_command(message))
+            message.reply(command_dispatch.dispatch_command(message))
 
 
 @require_chat
