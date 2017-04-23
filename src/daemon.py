@@ -19,7 +19,7 @@ if __name__ == "__main__":
         if handler.defer:
             err_handler = handler.method
         else:
-            err_handler = status._handler[status.START]
+            err_handler = status._handlers[status.START]
             handler.method()
 
         pid = os.fork()
