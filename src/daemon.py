@@ -1,5 +1,6 @@
 # vim: set filetype=python tabstop=4 shiftwidth=4 expandtab:
 
+import importlib
 import os
 
 import entry
@@ -18,6 +19,7 @@ if __name__ == "__main__":
         if handler.defer:
             err_handler = handler.method
         else:
+            err_handler = status._handlers[status.START]
             handler.method()
 
         pid = os.fork()
@@ -25,4 +27,7 @@ if __name__ == "__main__":
         if pid:
             status_code, handler = status.extract_status(os.waitpid(pid, 0)[1])
         else:
+            importlib.reload(entry)
+            importlib.reload(status)
+
             entry.start(err_handler)

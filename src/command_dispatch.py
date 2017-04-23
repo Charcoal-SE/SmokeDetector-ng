@@ -53,7 +53,7 @@ def dispatch_command(msg) -> str:
     command_name = cmd[len(config.command_prefix):].lower()
 
     if command_name not in _commands["prefix"]:
-        return "@%s No such command %s." % (msg.owner.name, command_name)
+        return "No such command %s." % command_name
     else:
         func, arity = _commands["prefix"][command_name]
 
@@ -69,20 +69,20 @@ def dispatch_command(msg) -> str:
             elif len(args) > arity:
                 return "Too many arguments."
             else:
-                return "@%s %s" % (msg.owner.name, func(*args, original_msg=msg))
+                return func(*args, original_msg=msg)
 
 
 def dispatch_reply_command(msg, reply, cmd) -> str:
     cmd = cmd.lower()
 
     if cmd not in _commands["reply"]:
-        return "@%s No such command %s." % (reply.owner.name, cmd)
+        return "No such command %s." % cmd
     else:
         func, arity = _commands["reply"][cmd]
 
         assert arity == 1
 
-        return "@%s %s" % (reply.owner.name, func(msg.id, original_msg=reply))
+        return func(msg.id, original_msg=reply)
 
 
 def dispatch_shorthand_command(msg, room) -> str:
