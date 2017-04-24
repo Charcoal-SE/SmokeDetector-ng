@@ -33,6 +33,19 @@ class BaseModel:
         SESSION.add(instance)
         SESSION.commit()
 
+    @classmethod
+    def update_all(cls, ids, **kwargs):
+        SESSION.query(cls).filter(cls.id.in_(ids)).update(kwargs)
+        SESSION.commit()
+
+    @staticmethod
+    def update_collection(col, **kwargs):
+        if not hasattr(col, 'update') or not callable(col.update):
+            raise AttributeError('Invalid ORM collection passed to update_collection')
+
+        col.update(kwargs)
+        SESSION.commit()
+
     def __repr__(self):
         field_names = [x for x in dir(self.__class__) if x[0] != '_' and not
                        inspect.ismethod(getattr(self.__class__, x))]
@@ -40,6 +53,12 @@ class BaseModel:
         fields = dict(zip(field_names, field_values))
         field_str = ", ".join(["{}={}".format(k, v) for k, v in fields.items()])
         return "<{}: {}>".format(self.__class__.__name__, field_str)
+
+    def update(self, **kwargs):
+        for field, val in kwargs.items():
+            setattr(self, field, val)
+
+        SESSION.commit()
 
 
 class AutoIgnoredPost(Base, BaseModel):
