@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 import inspect
 
-DB_PATH = os.path.join(os.path.abspath(os.path.dirname(__file__)), '../data/database.sqlite3')
+DB_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__)), '../data/database.sqlite3')
 
 ENGINE = create_engine('sqlite:////' + DB_PATH)
 Base = declarative_base()
