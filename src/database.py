@@ -61,6 +61,27 @@ class BaseModel:
         SESSION.commit()
 
 
+class SchemaMigration(Base, BaseModel):
+    __tablename__ = 'schema_migrations'
+
+    id = Column(Integer, primary_key=True)
+    migration_file = Column(String(255), nullable=False)
+    run_status = Column(Boolean, default=False, nullable=False)
+    run_at = Column(DateTime)
+
+    @staticmethod
+    def pending():
+        return SESSION.query(SchemaMigration).filter(SchemaMigration.run_status == False).all()
+
+    @staticmethod
+    def is_run(filename):
+        migration = SESSION.query(SchemaMigration).filter(SchemaMigration.migration_file == filename)
+        if migration.count() > 1:
+            raise MultipleResultsFound('Multiple migration files found with specified name.')
+
+        return migration.first().run_status
+
+
 class AutoIgnoredPost(Base, BaseModel):
     __tablename__ = 'auto_ignored_posts'
 
