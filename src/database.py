@@ -14,6 +14,7 @@ Base = declarative_base()
 Session = sessionmaker(bind=ENGINE)
 SESSION = Session()
 
+
 def initialize_new():
     if not os.path.isdir(os.path.dirname(DB_PATH)):
         os.mkdir(os.path.dirname(DB_PATH))
