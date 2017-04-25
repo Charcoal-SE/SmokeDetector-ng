@@ -7,7 +7,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 import inspect
 
-DB_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__)), '../data/database.sqlite3')
+DB_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../data/database.sqlite3'))
 
 ENGINE = create_engine('sqlite:////' + DB_PATH)
 Base = declarative_base()
@@ -46,14 +46,6 @@ class BaseModel:
         col.update(kwargs)
         SESSION.commit()
 
-    def __repr__(self):
-        field_names = [x for x in dir(self.__class__) if x[0] != '_' and not
-                       inspect.ismethod(getattr(self.__class__, x))]
-        field_values = [getattr(self, x).__repr__() for x in field_names]
-        fields = dict(zip(field_names, field_values))
-        field_str = ", ".join(["{}={}".format(k, v) for k, v in fields.items()])
-        return "<{}: {}>".format(self.__class__.__name__, field_str)
-
     def update(self, **kwargs):
         for field, val in kwargs.items():
             setattr(self, field, val)
@@ -68,6 +60,25 @@ class SchemaMigration(Base, BaseModel):
     migration_file = Column(String(255), nullable=False)
     run_status = Column(Boolean, default=False, nullable=False)
     run_at = Column(DateTime)
+
+    @staticmethod
+    def populate():
+        migrations_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../bin/migrations'))
+
+        existing_names = [x.migration_file for x in SESSION.query(SchemaMigration).all()]
+        new_files = [os.path.basename(x) for x in os.listdir(migrations_path)
+                     if os.path.isfile(os.path.join(migrations_path, x)) and os.path.basename(x) not in existing_names]
+        dead_files = [x for x in existing_names if x not in os.listdir(migrations_path)]
+
+        new_migrations = []
+        for name in new_files:
+            new_migrations.append(SchemaMigration(migration_file=name))
+
+        SESSION.add_all(new_migrations)
+        if len(dead_files) > 0:
+            dead = SESSION.query(SchemaMigration).filter(SchemaMigration.migration_file.in_(dead_files))
+            dead.delete(synchronize_session='fetch')
+        SESSION.commit()
 
     @staticmethod
     def pending():
