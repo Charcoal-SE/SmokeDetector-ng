@@ -26,10 +26,16 @@ def pull() -> None:
 
 
 @command(reply=False)
+def stappit() -> None:
+    os._exit(status.END)
+
+
+@command(reply=False)
 def location() -> str:
     return config.location
 
 
+# --- JOKE COMMANDS --- #
 @command(reply=False, whole_msg=True)
 def blame(msg) -> str:
     unlucky_victim = msg._client.get_user(random.choice(msg.room.get_current_user_ids()))
@@ -50,5 +56,21 @@ def blame2(msg, x) -> str:
 
 
 @command(reply=False)
-def stappit() -> None:
-    os._exit(status.END)
+def brownie() -> str:
+    return "Brown!"
+
+
+@command(reply=False)
+def lick() -> str:
+    return "*licks ice cream cone*"
+
+
+@command(reply=False)
+def tea() -> str:
+    return "*brews a cup of {choice} tea*".format(random.choice(['earl grey', 'green', 'chamomile', 'lemon',
+                                                                 'darjeeling', 'mint', 'jasmine']))
+
+
+@command(reply=False)
+def wut() -> str:
+    return "Whaddya mean, 'wut'? Humans..."
