@@ -5,7 +5,6 @@ from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
-import inspect
 
 DB_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../data/database.sqlite3'))
 
@@ -116,7 +115,7 @@ class BlacklistedUser(Base, BaseModel):
     
     :param site_url: a string containing the SE site URL, as it would have been inserted into the database.
     :param  user_id: an int containing the ID of the user to check on the specified site.
-    :returns: Two return values: a boolean indicating 'blacklisted or not', and either a BlacklistedUser instance 
+    :returns: Two return values: a boolean indicating 'blacklisted or not', and either a BlacklistedUser instance
               for the checked user, or None if the user is not blacklisted.
     """
     @staticmethod
@@ -144,7 +143,7 @@ class BodyfetcherMaxId(Base, BaseModel):
     Given a site URL, retrieves the latest max ID record for the site.
     
     :param site: a string containing the SE site URL, as it would have been inserted into the database.
-    :returns: A BodyfetcherMaxId instance representing the latest max ID record for the specified site, or None if no 
+    :returns: A BodyfetcherMaxId instance representing the latest max ID record for the specified site, or None if no
               record was found.
     """
     @staticmethod
@@ -163,7 +162,7 @@ class BodyfetcherQueueItem(Base, BaseModel):
 
     """
     Given a site URL, retrieves all items currently in the bodyfetcher queue for the site.
-    
+
     :param site: a string containing the SE site URL, as it would have been inserted into the database.
     :returns: A list of BodyfetcherQueueItem instances, each representing a queue entry for the specified site.
     """
