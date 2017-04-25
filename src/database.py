@@ -57,7 +57,7 @@ class SchemaMigration(Base, BaseModel):
     __tablename__ = 'schema_migrations'
 
     id = Column(Integer, primary_key=True)
-    migration_file = Column(String(255), nullable=False)
+    migration_file = Column(String(255), nullable=False, unique=True)
     run_status = Column(Boolean, default=False, nullable=False)
     run_at = Column(DateTime)
 

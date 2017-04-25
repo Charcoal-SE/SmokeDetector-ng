@@ -36,7 +36,9 @@ for pending in pending_migrations:
         raise AttributeError("Invalid migration file ({}) - no `execute` method present")
 
     migrator.execute(database, migration_engine)
-    record = database.SESSION.query(database.SchemaMigration).filter(database.SchemaMigration.migration_file == pending)
+    record = database.SESSION.query(database.SchemaMigration)\
+                             .filter(database.SchemaMigration.migration_file == pending)\
+                             .first()
     record.run_status = True
     record.run_at = datetime.now()
     database.SESSION.commit()
