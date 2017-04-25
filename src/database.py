@@ -215,6 +215,7 @@ class SmokeyMessage(Base, BaseModel):
     chat_site_url = Column(String(100))
     room_id = Column(Integer)
     message_id = Column(Integer)
+    is_report = Column(Boolean)
 
 
 class Notification(Base, BaseModel):
