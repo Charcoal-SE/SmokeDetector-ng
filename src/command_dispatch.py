@@ -59,9 +59,9 @@ def dispatch_command(msg, client) -> str:
         func, arity = _commands["prefix"][command_name]
 
         if arity == 0:
-            return func(original_msg=msg, **kwargs)
+            return func(original_msg=msg)
         elif arity == 1:
-            return func(args, original_msg=msg, **kwargs)
+            return func(args, original_msg=msg)
         else:
             args = args.split()
 
@@ -70,7 +70,7 @@ def dispatch_command(msg, client) -> str:
             elif len(args) > arity:
                 return "Too many arguments."
             else:
-                return func(*args, original_msg=msg, **kwargs)
+                return func(*args, original_msg=msg)
 
 
 def dispatch_reply_command(msg, reply, cmd, client) -> str:
@@ -84,7 +84,7 @@ def dispatch_reply_command(msg, reply, cmd, client) -> str:
 
         assert arity == 1
 
-        return func(msg.id, original_msg=reply, **kwargs)
+        return func(msg.id, original_msg=reply)
 
 
 def dispatch_shorthand_command(msg, room, client) -> str:

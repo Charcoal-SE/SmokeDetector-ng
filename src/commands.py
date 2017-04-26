@@ -12,33 +12,33 @@ from database import Notification
 
 
 @command(int, int, reply=False)
-def add(x, y, **kwargs) -> str:
+def add(x, y) -> str:
     return "%d and %d makes %d" % (x, y, x + y)
 
 
 # noinspection PyShadowingBuiltins
 @command(int, reply=True, whole_msg=True)
-def id(msg, x, **kwargs):
+def id(msg, x):
     return "Your message was %d. My message was %d." % (msg.id, x)
 
 
 @command(reply=False)
-def pull(**kwargs) -> None:
+def pull() -> None:
     os._exit(status.PULL)
 
 
 @command(reply=False)
-def stappit(**kwargs) -> None:
+def stappit() -> None:
     os._exit(status.END)
 
 
 @command(reply=False)
-def location(**kwargs) -> str:
+def location() -> str:
     return config.location
 
 
 @command(int, str, reply=True)
-def notify(room_id, site, **kwargs) -> str:
+def notify(room_id, site) -> str:
     chat_host = kwargs.get('client').host
     user_id = kwargs.get('user').id
     Notification.create(chat_site_url=chat_host, chat_user_id=user_id, room_id=room_id, site_url=site)
@@ -47,14 +47,14 @@ def notify(room_id, site, **kwargs) -> str:
 
 # --- JOKE COMMANDS --- #
 @command(reply=False, whole_msg=True)
-def blame(msg, **kwargs) -> str:
+def blame(msg) -> str:
     unlucky_victim = msg._client.get_user(random.choice(msg.room.get_current_user_ids()))
 
     return "It's [%s](https://chat.%s/users/%d)'s fault." % (unlucky_victim.name, msg._client.host, unlucky_victim.id)
 
 
 @command(str, reply=False, whole_msg=True, aliases=["blame\u180E"])
-def blame2(msg, x, **kwargs) -> str:
+def blame2(msg, x) -> str:
     base = {"\u180E": 0, "\u200B": 1, "\u200C": 2, "\u200D": 3, "\u2060": 4, "\u2063": 5, "\uFEFF": 6}
     user = 0
 
@@ -66,21 +66,21 @@ def blame2(msg, x, **kwargs) -> str:
 
 
 @command(reply=False)
-def brownie(**kwargs) -> str:
+def brownie() -> str:
     return "Brown!"
 
 
 @command(reply=False)
-def lick(**kwargs) -> str:
+def lick() -> str:
     return "*licks ice cream cone*"
 
 
 @command(reply=False)
-def tea(**kwargs) -> str:
+def tea() -> str:
     return "*brews a cup of {choice} tea*".format(random.choice(['earl grey', 'green', 'chamomile', 'lemon',
                                                                  'darjeeling', 'mint', 'jasmine']))
 
 
 @command(reply=False)
-def wut(**kwargs) -> str:
+def wut() -> str:
     return "Whaddya mean, 'wut'? Humans..."
