@@ -29,7 +29,7 @@ def command(*type_signature, reply=False, whole_msg=False, aliases=None):
             _commands["reply"][func.__name__] = cmd
 
             for alias in aliases:
-                _commands["reply"][alias] = command
+                _commands["reply"][alias] = cmd
         else:
             _commands["prefix"][func.__name__] = cmd
 
