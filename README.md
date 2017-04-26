@@ -15,9 +15,15 @@ Retrieve and install depedencies:
     
     sudo pip3 install -r requirements.txt
     
-Fill out the sample `config/secrets.json` and encrypt it:
+Fill out the sample `config/secrets-sample.json` and rename it to `config/secrets.json` and encrypt it:
 
     cd src
     python3 secrets.py ../config/secrets.json
+	cd ..
 
+Set up the database
+
+    cd bin
+	cd python3 create_database.py
+	
 Then start with either `python3 daemon.py` (restarts after failure) or `python3 entry.py`.
