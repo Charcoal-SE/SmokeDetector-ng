@@ -12,8 +12,7 @@ import database
 
 
 meta = MetaData()
-db_path = path.abspath(path.join(path.dirname(__file__), '../data/database.sqlite3'))
-migration_engine = create_engine('sqlite:////' + db_path)
+migration_engine = database.ENGINE
 meta.bind = migration_engine
 
 
