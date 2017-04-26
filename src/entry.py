@@ -5,6 +5,7 @@ import sys
 sys.path.append(os.path.abspath('..'))
 
 import chat
+import commands
 import secrets
 import status
 import ws
