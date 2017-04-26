@@ -16,6 +16,9 @@ matrix:
       language: generic
       env:
         - PYTHON36=1
+  allow_failures:
+    - os: osx
+  fast_finish: true
 
 before_install:
   - if [[ "$TRAVIS_OS_NAME" == "osx" ]]; then
