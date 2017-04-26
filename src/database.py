@@ -1,5 +1,6 @@
 import os
 import os.path
+from pathlib import Path
 import typing
 from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
@@ -7,6 +8,8 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 
 DB_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../data/database.sqlite3'))
+fs_root = Path(DB_PATH).parts[0]
+DB_PATH = DB_PATH.replace(fs_root, '', 1)
 
 ENGINE = create_engine('sqlite:////' + DB_PATH)
 Base = declarative_base()
