@@ -1,7 +1,6 @@
 # vim: set filetype=python tabstop=4 shiftwidth=4 expandtab:
 
-import chatexchange.client
-import chatexchange.events
+from ChatExchange import chatexchange.client, chatexchange.events
 import collections
 import itertools
 import json
