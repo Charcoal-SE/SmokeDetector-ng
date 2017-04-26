@@ -115,11 +115,11 @@ def on_msg(msg, client, room):
         elif message.parent and message.parent.owner.id in config.my_ids:
             command = message.content.split(" ", 1)[1]
 
-            message.reply(command_dispatch.dispatch_reply_command(message.parent, message, command))
+            message.reply(command_dispatch.dispatch_reply_command(message.parent, message, command, client))
         elif message.content.startswith(config.shorthand_prefix):
-            message.reply(command_dispatch.dispatch_shorthand_command(message, room))
+            message.reply(command_dispatch.dispatch_shorthand_command(message, room, client))
         elif message.content.startswith(config.command_prefix):
-            message.reply(command_dispatch.dispatch_command(message))
+            message.reply(command_dispatch.dispatch_command(message, client))
 
 
 @require_chat

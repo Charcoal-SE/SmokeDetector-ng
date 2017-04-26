@@ -41,7 +41,7 @@ def command(*type_signature, reply=False, whole_msg=False, aliases=None):
     return decorator
 
 
-def dispatch_command(msg) -> str:
+def dispatch_command(msg, client) -> str:
     command_parts = msg.content.split(" ", 1)
 
     if len(command_parts) == 2:
@@ -51,6 +51,7 @@ def dispatch_command(msg) -> str:
         args = ""
 
     command_name = cmd[len(config.command_prefix):].lower()
+    kwargs = {'client': client, 'user': msg.owner}
 
     if command_name not in _commands["prefix"]:
         return "No such command %s." % command_name
@@ -58,9 +59,9 @@ def dispatch_command(msg) -> str:
         func, arity = _commands["prefix"][command_name]
 
         if arity == 0:
-            return func(original_msg=msg)
+            return func(original_msg=msg, **kwargs)
         elif arity == 1:
-            return func(args, original_msg=msg)
+            return func(args, original_msg=msg, **kwargs)
         else:
             args = args.split()
 
@@ -69,11 +70,12 @@ def dispatch_command(msg) -> str:
             elif len(args) > arity:
                 return "Too many arguments."
             else:
-                return func(*args, original_msg=msg)
+                return func(*args, original_msg=msg, **kwargs)
 
 
-def dispatch_reply_command(msg, reply, cmd) -> str:
+def dispatch_reply_command(msg, reply, cmd, client) -> str:
     cmd = cmd.lower()
+    kwargs = {'client': client, 'user': msg.owner}
 
     if cmd not in _commands["reply"]:
         return "No such command %s." % cmd
@@ -82,10 +84,10 @@ def dispatch_reply_command(msg, reply, cmd) -> str:
 
         assert arity == 1
 
-        return func(msg.id, original_msg=reply)
+        return func(msg.id, original_msg=reply, **kwargs)
 
 
-def dispatch_shorthand_command(msg, room) -> str:
+def dispatch_shorthand_command(msg, room, client) -> str:
     commands = msg.content[len(config.shorthand_prefix):].split()
 
     output = []
