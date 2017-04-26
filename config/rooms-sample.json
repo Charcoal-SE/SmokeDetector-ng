@@ -1,0 +1,7 @@
+{
+  "stackexchange.com": { # site
+    "30332": { # room ID
+      "msg_types": ["debug", "commands"] # types of messages sent to this room
+    }
+  }
+}
