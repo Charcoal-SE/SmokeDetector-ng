@@ -208,15 +208,6 @@ class IgnoredPost(Base, BaseModel):
     post_id = Column(Integer)
 
 
-class Report(Base, BaseModel):
-    __tablename__ = 'reports'
-
-    id = Column(Integer, primary_key=True)
-    message_id = Column(Integer, ForeignKey(SmokeyMessage.id), nullable=False)
-    site_url = Column(String(100))
-    post_id = Column(Integer)
-
-
 class SmokeyMessage(Base, BaseModel):
     __tablename__ = 'smokey_messages'
 
@@ -225,6 +216,15 @@ class SmokeyMessage(Base, BaseModel):
     room_id = Column(Integer)
     message_id = Column(Integer)
     is_report = Column(Boolean)
+
+
+class Report(Base, BaseModel):
+    __tablename__ = 'reports'
+
+    id = Column(Integer, primary_key=True)
+    message_id = Column(Integer, ForeignKey(SmokeyMessage.id), nullable=False)
+    site_url = Column(String(100))
+    post_id = Column(Integer)
 
 
 class Notification(Base, BaseModel):
