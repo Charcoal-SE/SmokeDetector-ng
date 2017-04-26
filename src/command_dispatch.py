@@ -51,7 +51,6 @@ def dispatch_command(msg, client) -> str:
         args = ""
 
     command_name = cmd[len(config.command_prefix):].lower()
-    kwargs = {'client': client, 'user': msg.owner}
 
     if command_name not in _commands["prefix"]:
         return "No such command %s." % command_name
@@ -75,7 +74,6 @@ def dispatch_command(msg, client) -> str:
 
 def dispatch_reply_command(msg, reply, cmd, client) -> str:
     cmd = cmd.lower()
-    kwargs = {'client': client, 'user': msg.owner}
 
     if cmd not in _commands["reply"]:
         return "No such command %s." % cmd

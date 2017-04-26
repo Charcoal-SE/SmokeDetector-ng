@@ -37,10 +37,10 @@ def location() -> str:
     return config.location
 
 
-@command(int, str, reply=True)
-def notify(room_id, site) -> str:
-    chat_host = kwargs.get('client').host
-    user_id = kwargs.get('user').id
+@command(int, str, reply=True, whole_msg=True)
+def notify(msg, room_id, site) -> str:
+    chat_host = msg.room._client.host
+    user_id = msg.owner.id
     Notification.create(chat_site_url=chat_host, chat_user_id=user_id, room_id=room_id, site_url=site)
     return "You will now be notified of reports on `{}`, in room {} on chat.{}.".format(site, room_id, chat_host)
 
