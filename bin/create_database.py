@@ -18,13 +18,13 @@ for name, obj in inspect.getmembers(sys.modules[database.__name__]):
 
 print("Found models: {}".format(', '.join(models)))
 
-if not path.isdir(path.dirname(database.DB_PATH)):
-    mkdir(path.dirname(database.DB_PATH))
-    print("Made directory {}".format(path.dirname(database.DB_PATH)))
+if not path.isdir(path.dirname(database.FULL_DB_PATH)):
+    mkdir(path.dirname(database.FULL_DB_PATH))
+    print("Made directory {}".format(path.dirname(database.FULL_DB_PATH)))
 
-if not path.isfile(database.DB_PATH):
-    with open(database.DB_PATH, 'w+') as f:
-        print("Created database file {}".format(database.DB_PATH))
+if not path.isfile(database.FULL_DB_PATH):
+    with open(database.FULL_DB_PATH, 'w+') as f:
+        print("Created database file {}".format(database.FULL_DB_PATH))
         f.close()
 
 print("Creating tables...")
