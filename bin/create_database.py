@@ -19,7 +19,7 @@ for name, obj in inspect.getmembers(sys.modules[database.__name__]):
 print("Found models: {}".format(', '.join(models)))
 
 if not path.isdir(path.dirname(database.DB_PATH)):
-    mkdir(database.basedir)
+    mkdir(path.dirname(database.DB_PATH))
     print("Made directory {}".format(path.dirname(database.DB_PATH)))
 
 if not path.isfile(database.DB_PATH):
