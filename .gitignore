@@ -129,3 +129,7 @@ crashlytics-build.properties
 fabric.properties
 
 data/database.sqlite3
+config/config.json
+config/rooms.json
+config/secrets.json
+config/secrets.json.aes

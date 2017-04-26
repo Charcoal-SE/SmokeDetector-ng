@@ -1,7 +1,10 @@
 # vim: set filetype=python tabstop=4 shiftwidth=4 expandtab:
 
+import os.path
+import sys
+sys.path.append(os.path.abspath('..'))
+
 import chat
-import commands
 import secrets
 import status
 import ws

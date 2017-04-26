@@ -1,6 +1,6 @@
 # vim: set filetype=python tabstop=4 shiftwidth=4 expandtab:
 
-from ChatExchange import chatexchange.client, chatexchange.events
+from ChatExchange.chatexchange import client as chatclient, events
 import collections
 import itertools
 import json
@@ -45,7 +45,7 @@ def init():
     global _last_messages
 
     for site in _clients.keys():
-        client = chatexchange.client.Client(site)
+        client = chatclient.Client(site)
         client.login(secrets.email, secrets.pw)
 
         _clients[site] = client
@@ -96,7 +96,7 @@ def pickle_last_messages():
 
 @require_chat
 def on_msg(msg, client, room):
-    if isinstance(msg, chatexchange.events.MessagePosted) or isinstance(msg, chatexchange.events.MessageEdited):
+    if isinstance(msg, events.MessagePosted) or isinstance(msg, events.MessageEdited):
         message = msg.message
 
         if message.owner.id in config.my_ids:
