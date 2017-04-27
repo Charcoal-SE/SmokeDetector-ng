@@ -1,14 +1,15 @@
 # vim: set filetype=python tabstop=4 shiftwidth=4 expandtab:
 
 import imp
-import importlib
 import multiprocessing
+import os.path
 import sys
-import types
 
 import entry
 import secrets
 import status
+
+DONT_RELOAD = set(("__main__", "secrets", "config", "command_dispatch"))
 
 secrets.open_store()
 
@@ -23,12 +24,15 @@ if __name__ == "__main__":
             err_handler = status.handlers[status.START]
             handler.method()
 
-        for name, module in sys.modules.items():
-            if (name != "__main__" and
-                    not imp.is_builtin(name) and
-                    not imp.is_frozen(name) and
-                    isinstance(name, types.ModuleType)):
-                importlib.reload(module)
+        for name in list(sys.modules.keys()):
+            if name not in DONT_RELOAD:
+                try:
+                    fh, path, details = imp.find_module(name)
+                except:
+                    path = None
+
+                if path and os.path.dirname(path) == os.getcwd():
+                    imp.load_module(name, fh, path, details)
 
         process = multiprocessing.Process(target=entry.start, args=(err_handler,))
 
