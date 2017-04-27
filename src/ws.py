@@ -3,13 +3,14 @@
 import threading
 import websocket
 
+from excepthook import excepthook
 import chat
 
 
 def start_event_loop():
     socket = websocket.WebSocketApp("ws://qa.sockets.stackexchange.com", on_open=init_ws, on_message=lambda *x: None,
                                     on_close=restart_ws)
-    threading.Thread(target=socket.run_forever).start()
+    threading.Thread(target=excepthook(socket.run_forever)).start()
 
 
 def init_ws(socket):

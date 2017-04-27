@@ -1,7 +1,8 @@
-import chat
+from typing import Any, Union
 import html
 import json
-from typing import Any, Union
+
+import chat
 
 
 class Post:

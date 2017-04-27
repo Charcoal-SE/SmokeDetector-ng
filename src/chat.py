@@ -4,11 +4,11 @@ from ChatExchange.chatexchange import client as chatclient, events
 import collections
 import itertools
 import json
-import os.path
 
+from database import SESSION, SmokeyMessage
+from excepthook import excepthook
 import command_dispatch
 import config
-from database import SESSION, SmokeyMessage
 import git
 import secrets
 
@@ -42,7 +42,7 @@ def init():
 
     for site in _clients.keys():
         client = chatclient.Client(site)
-        client.login(secrets.email, secrets.pw)
+        client.login(secrets.email.value, secrets.pw.value)
 
         _clients[site] = client
 
@@ -52,7 +52,7 @@ def init():
         room = _clients[site].get_room(roomid)
 
         room.join()
-        room.watch(lambda msg, client: on_msg(msg, client, room))
+        room.watch(excepthook(lambda msg, client: on_msg(msg, client, room)))
         _rooms[(site, roomid)] = room
 
     _init = True

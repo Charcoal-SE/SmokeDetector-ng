@@ -4,8 +4,10 @@ import Cryptodome.Cipher.AES
 import Cryptodome.Hash.SHA256
 import Cryptodome.Random
 import Cryptodome.Util.Counter
+import ctypes
 import getpass
 import json
+import multiprocessing
 
 import config
 
@@ -21,7 +23,7 @@ _optional_credentials = [
     "gh_pw"
 ]
 
-_secrets = False
+_secrets = multiprocessing.Value(ctypes.c_bool, False)
 
 
 def require_secrets(function):
@@ -53,21 +55,23 @@ def open_store():
 
         have_keys = secrets.keys()
         need_keys = _required_credentials
+
         if config.require_optional_credentials:
             need_keys += _optional_credentials
 
         missing_keys = [x for x in need_keys if x not in have_keys]
+
         for credential in missing_keys:
             secrets[credential] = getpass.getpass(credential + ": ")
 
         for key, value in secrets.items():
-            globals()[key] = value
+            globals()[key] = multiprocessing.Value(ctypes.c_wchar_p, value)
 
-        _secrets = True
+        _secrets.value = True
 
 
 def secrets_loaded():
-    return _secrets
+    return _secrets.value
 
 
 def make_store(plain_filename, cipher_filename):

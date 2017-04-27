@@ -1,14 +1,12 @@
 # vim: set filetype=python tabstop=4 shiftwidth=4 expandtab:
 
-import os
 import random
-
-import config
-import status
-import chat
 
 from command_dispatch import command
 from database import Notification, SESSION
+import config
+import excepthook
+import status
 
 
 @command(int, int, reply=False)
@@ -24,12 +22,12 @@ def id(msg, x):
 
 @command(reply=False)
 def pull() -> None:
-    os._exit(status.PULL)
+    excepthook.safe_exit(status.PULL)
 
 
 @command(reply=False)
 def stappit() -> None:
-    os._exit(status.END)
+    excepthook.safe_exit(status.END)
 
 
 @command(reply=False)
@@ -62,6 +60,10 @@ def unnotify(msg, room_id, site) -> str:
 
     return "You will no longer be notified of reports on `{}`, in room {} on chat.{}.".format(site, room_id, chat_host)
 
+
+@command(reply=False)
+def throw() -> None:
+    raise Exception
 
 # --- JOKE COMMANDS --- #
 @command(reply=False, whole_msg=True)

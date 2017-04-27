@@ -13,7 +13,7 @@ START = 2
 PULL = 3
 SIGNAL = 128
 
-_handlers = {
+handlers = {
     ERR: Handler(handle_err, True),
     START: Handler(handle_start, True),
     PULL: Handler(handle_pull, False),
@@ -22,12 +22,7 @@ _handlers = {
 
 
 def extract_status(exit_code):
-    if not exit_code:
-        return END, None
-
-    high = exit_code >> 8
-
-    if high:
-        return high, _handlers[high]
+    if exit_code >= 0:
+        return exit_code, handlers.get(exit_code, 0)
     else:
-        return SIGNAL, Handler(lambda: _handlers[SIGNAL].method(exit_code), True)
+        return SIGNAL, Handler(lambda: handlers[SIGNAL].method(-exit_code), True)

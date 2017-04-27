@@ -2,10 +2,13 @@
 
 import os.path
 import sys
+
 sys.path.append(os.path.abspath('..'))
 
 import chat
 import commands
+import excepthook
+import os
 import secrets
 import status
 import ws
@@ -18,12 +21,12 @@ def start(handler):
 
     chat.init()
 
-#  retrieve.init_pools()
-#  spam.init_pools()
-    handler()
-
+    handler.method()
     ws.start_event_loop()
+
+    excepthook.shutdown.wait()
+    os._exit(excepthook.err_code)
 
 
 if __name__ == "__main__":
-    start(status._handlers[status.START].method)
+    start(status._handlers[status.START])
