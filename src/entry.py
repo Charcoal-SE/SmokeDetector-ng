@@ -29,4 +29,4 @@ def start(handler):
 
 
 if __name__ == "__main__":
-    start(status._handlers[status.START])
+    start(status.handlers[status.START])
