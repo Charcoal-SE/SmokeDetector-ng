@@ -41,7 +41,7 @@ def command(*type_signature, reply=False, whole_msg=False, aliases=None):
     return decorator
 
 
-def dispatch_command(msg, client) -> str:
+def dispatch_command(msg) -> str:
     command_parts = msg.content.split(" ", 1)
 
     if len(command_parts) == 2:
@@ -72,7 +72,7 @@ def dispatch_command(msg, client) -> str:
                 return func(*args, original_msg=msg)
 
 
-def dispatch_reply_command(msg, reply, cmd, client) -> str:
+def dispatch_reply_command(msg, reply, cmd) -> str:
     cmd = cmd.lower()
 
     if cmd not in _commands["reply"]:
@@ -82,10 +82,10 @@ def dispatch_reply_command(msg, reply, cmd, client) -> str:
 
         assert arity == 1
 
-        return func(msg.id, original_msg=reply)
+        return func(msg.id[0], original_msg=reply)
 
 
-def dispatch_shorthand_command(msg, room, client) -> str:
+def dispatch_shorthand_command(msg, room) -> str:
     commands = msg.content[len(config.shorthand_prefix):].split()
 
     output = []

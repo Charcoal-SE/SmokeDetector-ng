@@ -41,7 +41,9 @@ def location() -> str:
 def notify(msg, room_id, site) -> str:
     chat_host = msg.room._client.host
     user_id = msg.owner.id
+
     Notification.create(chat_site_url=chat_host, chat_user_id=user_id, room_id=room_id, site_url=site)
+
     return "You will now be notified of reports on `{}`, in room {} on chat.{}.".format(site, room_id, chat_host)
 
 
@@ -49,12 +51,15 @@ def notify(msg, room_id, site) -> str:
 def unnotify(msg, room_id, site) -> str:
     chat_host = msg._client.host
     user_id = msg.owner.id
+
     notifications = SESSION.query(Notification).filter(Notification.chat_site_url == chat_host,
                                                        Notification.chat_user_id == user_id,
                                                        Notification.room_id == room_id,
                                                        Notification.site_url == site)
+
     notifications.delete(synchronize_session='fetch')
     SESSION.commit()
+
     return "You will no longer be notified of reports on `{}`, in room {} on chat.{}.".format(site, room_id, chat_host)
 
 
