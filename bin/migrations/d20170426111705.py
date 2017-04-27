@@ -9,5 +9,5 @@ def execute(database, engine):
                    Column('message_id', Integer, ForeignKey(database.SmokeyMessage.id), nullable=False),
                    Column('site_url', String(100)),
                    Column('post_id', Integer))
-    
+
     report.create(engine)
