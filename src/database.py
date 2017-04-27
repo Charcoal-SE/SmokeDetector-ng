@@ -115,7 +115,7 @@ class BlacklistedUser(Base, BaseModel):
 
     """
     Given a site URL and user ID, finds out whether the user represented by the combination is blacklisted or not.
-    
+
     :param site_url: a string containing the SE site URL, as it would have been inserted into the database.
     :param  user_id: an int containing the ID of the user to check on the specified site.
     :returns: Two return values: a boolean indicating 'blacklisted or not', and either a BlacklistedUser instance
@@ -144,7 +144,7 @@ class BodyfetcherMaxId(Base, BaseModel):
 
     """
     Given a site URL, retrieves the latest max ID record for the site.
-    
+
     :param site: a string containing the SE site URL, as it would have been inserted into the database.
     :returns: A BodyfetcherMaxId instance representing the latest max ID record for the specified site, or None if no
               record was found.
@@ -183,7 +183,7 @@ class BodyfetcherQueueTiming(Base, BaseModel):
 
     """
     Given a site URL, retrieves a list of times that posts for the specified site have been in the bodyfetcher queue.
-    
+
     :param site: a string containing the SE site URL, as it would have been inserted into the database.
     :returns: A list of floats, each representing the length of time a post on the specified site was in the queue.
     """

@@ -65,6 +65,7 @@ def unnotify(msg, room_id, site) -> str:
 def throw() -> None:
     raise Exception
 
+
 # --- JOKE COMMANDS --- #
 @command(reply=False, whole_msg=True)
 def blame(msg) -> str:

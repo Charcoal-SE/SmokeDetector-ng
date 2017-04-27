@@ -9,7 +9,7 @@ def excepthook(func):
         try:
             return func(*args, **kwargs)
         except Exception as ex:
-            print("{}: caught exception {}".format(func.__name__, ex)) # replace with better logging
+            print("{}: caught exception {}".format(func.__name__, ex))  # replace with better logging
             safe_exit(1)
 
     return f
@@ -17,6 +17,6 @@ def excepthook(func):
 
 def safe_exit(code):
     global err_code
-    
+
     err_code = code
     shutdown.set()

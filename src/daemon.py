@@ -1,7 +1,10 @@
 # vim: set filetype=python tabstop=4 shiftwidth=4 expandtab:
 
+import imp
 import importlib
 import multiprocessing
+import sys
+import types
 
 import entry
 import secrets
@@ -20,8 +23,12 @@ if __name__ == "__main__":
             err_handler = status.handlers[status.START]
             handler.method()
 
-        importlib.reload(entry)
-        importlib.reload(status)
+        for name, module in sys.modules.items():
+            if (name != "__main__" and
+                    not imp.is_builtin(name) and
+                    not imp.is_frozen(name) and
+                    isinstance(name, types.ModuleType)):
+                importlib.reload(module)
 
         process = multiprocessing.Process(target=entry.start, args=(err_handler,))
 
