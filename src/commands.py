@@ -1,6 +1,8 @@
 # vim: set filetype=python tabstop=4 shiftwidth=4 expandtab:
 
 import random
+import os
+import signal
 
 from command_dispatch import command
 from database import Notification, SESSION
@@ -64,6 +66,11 @@ def unnotify(msg, room_id, site) -> str:
 @command(reply=False)
 def throw() -> None:
     raise Exception
+
+
+@command(int, reply=False)
+def signal(signum) -> None:
+    os.kill(os.getpid(), signum)
 
 
 # --- JOKE COMMANDS --- #
