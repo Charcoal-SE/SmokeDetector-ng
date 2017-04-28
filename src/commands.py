@@ -2,10 +2,9 @@
 
 import random
 import os
-import signal
 
 from command_dispatch import command
-from database import Notification, SESSION
+from database import BaseModel, SESSION, Notification
 import config
 import excepthook
 import status
@@ -56,9 +55,7 @@ def unnotify(msg, room_id, site) -> str:
                                                        Notification.chat_user_id == user_id,
                                                        Notification.room_id == room_id,
                                                        Notification.site_url == site)
-
-    notifications.delete(synchronize_session='fetch')
-    SESSION.commit()
+    BaseModel.delete_collection(notifications)
 
     return "You will no longer be notified of reports on `{}`, in room {} on chat.{}.".format(site, room_id, chat_host)
 
