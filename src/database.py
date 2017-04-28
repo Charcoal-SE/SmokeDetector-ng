@@ -48,10 +48,22 @@ class BaseModel:
         col.update(kwargs)
         SESSION.commit()
 
+    @staticmethod
+    def delete_collection(col, sync='fetch'):
+        if not hasattr(col, 'delete') or not callable(col.delete):
+            raise AttributeError('Invalid ORM collection passed to delete_collection')
+
+        col.delete(synchronize_session=sync)
+        SESSION.commit()
+
     def update(self, **kwargs):
         for field, val in kwargs.items():
             setattr(self, field, val)
 
+        SESSION.commit()
+
+    def destroy(self, sync='fetch'):
+        SESSION.query(self.__class__).filter(self.__class__.id == self.id).delete(synchronize_session=sync)
         SESSION.commit()
 
 
