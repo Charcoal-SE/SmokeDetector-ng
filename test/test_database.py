@@ -1,6 +1,3 @@
-import os.path
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 from datetime import datetime
 from src.database import *
 
@@ -9,7 +6,8 @@ def setup_module(module):
     # Initialize the database and actually create tables before we start querying
     module.initialize_new()
 
-    # Add some dummy records we can test on
+    # Add some dummy records we can test on.
+    # If you add records to this, make sure to delete them in teardown_module too.
     records = [
         Notification(chat_user_id=123456, chat_site_url='stackoverflow.com', room_id=33032,
                      site_url='ng-test.stackexchange.com'),
@@ -20,9 +18,19 @@ def setup_module(module):
         Notification(chat_user_id=654321, chat_site_url='stackoverflow.com', room_id=99843,
                      site_url='ng-test-dc.stackexchange.com'),
         Notification(chat_user_id=654321, chat_site_url='stackoverflow.com', room_id=99843,
-                     site_url='ng-test-ds.stackexchange.com')
+                     site_url='ng-test-ds.stackexchange.com'),
+        SchemaMigration(migration_file='ng_test_d20170429021826.py', run_status=False, run_at=None),
+        SchemaMigration(migration_file='ng_test_d20170429021856.py', run_status=True,
+                        run_at=datetime(2017, 4, 29, 2, 19, 26))
     ]
     SESSION.add_all(records)
+    SESSION.commit()
+
+
+def teardown_module(module):
+    SESSION.query(Notification).filter(Notification.site_url.like('ng-test%')).delete(synchronize_session=False)
+    SESSION.query(SchemaMigration).filter(SchemaMigration.migration_file.like('ng_test%'))\
+           .delete(synchronize_session=False)
     SESSION.commit()
 
 
@@ -74,3 +82,16 @@ def test_basemodel_delete():
 
     notif_col = SESSION.query(Notification).filter(Notification.id == notif.id)
     assert notif_col.count() == 0
+
+
+def test_schema_migration_pending():
+    pending = SchemaMigration.pending()
+
+    # SchemaMigration.pending returns sqlalchemy Query.all() (list), so use len() instead of Query.count().
+    assert len(pending) == 1
+    assert pending[0].migration_file == 'ng_test_d20170429021826.py'
+
+
+def test_schema_migration_is_run():
+    assert SchemaMigration.is_run('ng_test_d20170429021856.py') is True
+    assert SchemaMigration.is_run('ng_test_d20170429021826.py') is False
