@@ -6,9 +6,9 @@ import entry
 import secrets
 import status
 
-secrets.open_store()
-
 if __name__ == "__main__":
+    secrets.open_store()
+
     prev_exit = status.START
 
     while prev_exit != status.END:
