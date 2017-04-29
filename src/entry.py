@@ -14,7 +14,9 @@ import status
 import ws
 
 
-def start(handler):
+def start(handler_code):
+    handler = status.get_handler(handler_code)
+
     if not secrets.secrets_loaded():
         print("Secret store not already open: started without daemon?")
         secrets.open_store()
@@ -29,4 +31,4 @@ def start(handler):
 
 
 if __name__ == "__main__":
-    start(status.handlers[status.START])
+    start(status.START)

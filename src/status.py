@@ -21,8 +21,8 @@ handlers = {
 }
 
 
-def extract_status(exit_code):
-    if exit_code >= 0:
-        return exit_code, handlers.get(exit_code, 0)
+def get_handler(exit_code):
+    if exit_code > 0:
+        return handlers[exit_code]
     else:
-        return SIGNAL, Handler(lambda: handlers[SIGNAL].method(-exit_code), True)
+        return Handler(lambda: handlers[SIGNAL].method(-exit_code), True)

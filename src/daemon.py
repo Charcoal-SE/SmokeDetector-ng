@@ -9,19 +9,20 @@ import status
 secrets.open_store()
 
 if __name__ == "__main__":
-    status_code = status.START
-    handler = status.handlers[status_code]
+    prev_exit = status.START
 
-    while status_code != status.END:
+    while prev_exit != status.END:
+        handler = status.get_handler(prev_exit)
+
         if handler.defer:
-            err_handler = handler
+            handler_code = prev_exit
         else:
             handler.method()
-            err_handler = status.handlers[status.START]
+            handler_code = status.START
 
-        process = multiprocessing.Process(target=entry.start, args=(err_handler,))
+        process = multiprocessing.Process(target=entry.start, args=(handler_code,))
 
         process.start()
         process.join()
 
-        status_code, handler = status.extract_status(process.exitcode)
+        prev_exit = process.exitcode
