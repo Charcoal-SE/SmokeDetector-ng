@@ -1,4 +1,5 @@
 from datetime import datetime
+from sqlalchemy import or_
 from src.database import *
 
 
@@ -21,9 +22,20 @@ def setup_module(module):
                      site_url='ng-test-ds.stackexchange.com'),
         SchemaMigration(migration_file='ng_test_d20170429021826.py', run_status=False, run_at=None),
         SchemaMigration(migration_file='ng_test_d20170429021856.py', run_status=True,
-                        run_at=datetime(2017, 4, 29, 2, 19, 26))
+                        run_at=datetime(2017, 4, 29, 2, 19, 26)),
+        User(cso_user_id=-999, cse_user_id=-999, cmse_user_id=-999),
+        Role(role_name='ng-test-admin')
     ]
     SESSION.add_all(records)
+    SESSION.commit()
+
+    # Annoyingly, we have to do this twice so that we have access to the id attribute for link models.
+    test_user = SESSION.query(User).filter(User.cso_user_id == -999).first()
+    test_role = SESSION.query(Role).filter(Role.role_name == 'ng-test-admin').first()
+    link_records = [
+        UserRole(user_id=test_user.id, role_id=test_role.id)
+    ]
+    SESSION.add_all(link_records)
     SESSION.commit()
 
 
@@ -31,6 +43,15 @@ def teardown_module(module):
     SESSION.query(Notification).filter(Notification.site_url.like('ng-test%')).delete(synchronize_session=False)
     SESSION.query(SchemaMigration).filter(SchemaMigration.migration_file.like('ng_test%'))\
            .delete(synchronize_session=False)
+
+    user_ids = [x.id for x in SESSION.query(User).filter(User.cso_user_id == -999).all()]
+    role_ids = [x.id for x in SESSION.query(Role).filter(Role.role_name.like('ng-test%')).all()]
+    SESSION.query(UserRole).filter(or_(UserRole.user_id.in_(user_ids), UserRole.role_id.in_(role_ids)))\
+           .delete(synchronize_session=False)
+
+    SESSION.query(User).filter(User.id.in_(user_ids)).delete(synchronize_session=False)
+    SESSION.query(Role).filter(Role.id.in_(role_ids)).delete(synchronize_session=False)
+
     SESSION.commit()
 
 
@@ -95,3 +116,19 @@ def test_schema_migration_pending():
 def test_schema_migration_is_run():
     assert SchemaMigration.is_run('ng_test_d20170429021856.py') is True
     assert SchemaMigration.is_run('ng_test_d20170429021826.py') is False
+
+
+def test_user_role_names():
+    user = SESSION.query(User).filter(User.cso_user_id == -999).first()
+    assert user.role_names() == ['ng-test-admin']
+
+
+def test_user_has_role():
+    user = SESSION.query(User).filter(User.cso_user_id == -999).first()
+    assert user.has_role('ng-test-admin')
+
+
+def test_role_users():
+    role = SESSION.query(Role).filter(Role.role_name == 'ng-test-admin').first()
+    user = SESSION.query(User).filter(User.cso_user_id == -999).first()
+    assert role.users() == [user]

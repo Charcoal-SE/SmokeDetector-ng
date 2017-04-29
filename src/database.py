@@ -1,7 +1,7 @@
 from pathlib import Path
 from sqlalchemy import *
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, relationship
 from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 import os
 import os.path
@@ -279,12 +279,35 @@ class User(Base, BaseModel):
 
     UniqueConstraint(cso_user_id, cse_user_id, cmse_user_id)
 
+    user_roles = relationship('UserRole', back_populates='user')
+
+    _role_names = None
+
+    def role_names(self, reload=False):
+        if self._role_names is None or reload is True:
+            self._role_names = [x.role.role_name for x in self.user_roles]
+
+        return self._role_names
+
+    def has_role(self, role_name, reload=False):
+        return role_name in self.role_names(reload=reload)
+
 
 class Role(Base, BaseModel):
     __tablename__ = 'roles'
 
     id = Column(Integer, primary_key=True)
     role_name = Column(String(100))
+
+    user_roles = relationship('UserRole', back_populates='role')
+
+    _users = None
+
+    def users(self, reload=False):
+        if self._users is None or reload is True:
+            self._users = [x.user for x in self.user_roles]
+
+        return self._users
 
 
 class UserRole(Base, BaseModel):
@@ -294,3 +317,6 @@ class UserRole(Base, BaseModel):
     role_id = Column(Integer, ForeignKey(Role.id), nullable=False)
 
     PrimaryKeyConstraint(user_id, role_id)
+
+    user = relationship(User, back_populates='user_roles')
+    role = relationship(Role, back_populates='user_roles')
