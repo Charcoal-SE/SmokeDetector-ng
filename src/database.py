@@ -267,3 +267,30 @@ class WhyDatum(Base, BaseModel):
     site_url = Column(String(100))
     post_id = Column(Integer)
     why = Column(String(1000))
+
+
+class User(Base, BaseModel):
+    __tablename__ = 'users'
+
+    id = Column(Integer, primary_key=True)
+    cso_user_id = Column(Integer)
+    cse_user_id = Column(Integer)
+    cmse_user_id = Column(Integer)
+
+    UniqueConstraint(cso_user_id, cse_user_id, cmse_user_id)
+
+
+class Role(Base, BaseModel):
+    __tablename__ = 'roles'
+
+    id = Column(Integer, primary_key=True)
+    role_name = Column(String(100))
+
+
+class UserRole(Base, BaseModel):
+    __tablename__ = 'users_roles'
+
+    user_id = Column(Integer, ForeignKey(User.id), nullable=False)
+    role_id = Column(Integer, ForeignKey(Role.id), nullable=False)
+
+    PrimaryKeyConstraint(user_id, role_id)
