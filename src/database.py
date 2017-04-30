@@ -34,6 +34,7 @@ class BaseModel:
         instance = cls(**kwargs)
         SESSION.add(instance)
         SESSION.commit()
+        return instance
 
     @classmethod
     def update_all(cls, ids, **kwargs):
@@ -269,6 +270,35 @@ class WhyDatum(Base, BaseModel):
     why = Column(String(1000))
 
 
+class Role(Base, BaseModel):
+    __tablename__ = 'roles'
+
+    id = Column(Integer, primary_key=True)
+    role_name = Column(String(100))
+
+    user_roles = relationship('UserRole', back_populates='role')
+
+    _users = None
+
+    def users(self, reload=False):
+        if self._users is None or reload is True:
+            self._users = [x.user for x in self.user_roles]
+
+        return self._users
+
+
+class UserRole(Base, BaseModel):
+    __tablename__ = 'users_roles'
+
+    user_id = Column(Integer, ForeignKey('users.id'), nullable=False)
+    role_id = Column(Integer, ForeignKey(Role.id), nullable=False)
+
+    PrimaryKeyConstraint(user_id, role_id)
+
+    user = relationship('User', back_populates='user_roles')
+    role = relationship(Role, back_populates='user_roles')
+
+
 class User(Base, BaseModel):
     __tablename__ = 'users'
 
@@ -292,31 +322,14 @@ class User(Base, BaseModel):
     def has_role(self, role_name, reload=False):
         return role_name in self.role_names(reload=reload)
 
+    def add_role(self, role_name, create_if_missing=False):
+        roles = SESSION.query(Role).filter(Role.role_name == role_name)
+        if roles.count() > 0:
+            role = roles.first()
+        else:
+            if create_if_missing:
+                role = Role.create(role_name=role_name)
+            else:
+                raise AttributeError('Role \'{}\' doesn\'t exist and create_if_missing is False'.format(role_name))
 
-class Role(Base, BaseModel):
-    __tablename__ = 'roles'
-
-    id = Column(Integer, primary_key=True)
-    role_name = Column(String(100))
-
-    user_roles = relationship('UserRole', back_populates='role')
-
-    _users = None
-
-    def users(self, reload=False):
-        if self._users is None or reload is True:
-            self._users = [x.user for x in self.user_roles]
-
-        return self._users
-
-
-class UserRole(Base, BaseModel):
-    __tablename__ = 'users_roles'
-
-    user_id = Column(Integer, ForeignKey(User.id), nullable=False)
-    role_id = Column(Integer, ForeignKey(Role.id), nullable=False)
-
-    PrimaryKeyConstraint(user_id, role_id)
-
-    user = relationship(User, back_populates='user_roles')
-    role = relationship(Role, back_populates='user_roles')
+        return UserRole.create(user_id=self.id, role_id=role.id)

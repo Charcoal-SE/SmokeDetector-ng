@@ -128,6 +128,29 @@ def test_user_has_role():
     assert user.has_role('ng-test-admin')
 
 
+def test_user_add_role():
+    user = SESSION.query(User).filter(User.cso_user_id == -999).first()
+    user.add_role('ng-test-role', create_if_missing=True)
+    assert user.has_role('ng-test-role', reload=True)
+
+
+def test_user_add_role_exception():
+    user = SESSION.query(User).filter(User.cso_user_id == -999).first()
+    try:
+        user.add_role('ng-test-nonexistent')
+        raise AssertionError('Expected AttributeError from user.add_role call, got no exception')
+    except AttributeError:
+        pass
+
+
+def test_has_role_caching():
+    user = SESSION.query(User).filter(User.cso_user_id == -999).first()
+    assert user.has_role('ng-test-caching') is False
+    user.add_role('ng-test-caching', create_if_missing=True)
+    assert user.has_role('ng-test-caching') is False
+    assert user.has_role('ng-test-caching', reload=True)
+
+
 def test_role_users():
     role = SESSION.query(Role).filter(Role.role_name == 'ng-test-admin').first()
     user = SESSION.query(User).filter(User.cso_user_id == -999).first()
