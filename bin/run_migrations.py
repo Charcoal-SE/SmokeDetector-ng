@@ -23,7 +23,8 @@ def get_table(cls):
 
 setattr(database, 'get_table', get_table)
 
-database.SchemaMigration.populate()
+print("Current SCHEMA_VERSION: {}".format(database.SCHEMA_VERSION))
+database.SchemaMigration.populate(current_version=database.SCHEMA_VERSION)
 
 pending_migrations = [x.migration_file for x in database.SchemaMigration.pending()]
 print("Pending migrations:")

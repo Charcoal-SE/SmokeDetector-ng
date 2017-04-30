@@ -6,6 +6,7 @@ from sqlalchemy.orm.exc import NoResultFound, MultipleResultsFound
 import os
 import os.path
 import typing
+from datetime import datetime
 
 FULL_DB_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../data/database.sqlite3'))
 fs_root = Path(FULL_DB_PATH).parts[0]
@@ -15,6 +16,8 @@ ENGINE = create_engine('sqlite:////' + DB_PATH)
 Base = declarative_base()
 Session = sessionmaker(bind=ENGINE)
 SESSION = Session()
+
+SCHEMA_VERSION = 'd20170429152850'
 
 
 def initialize_new():
@@ -77,17 +80,22 @@ class SchemaMigration(Base, BaseModel):
     run_at = Column(DateTime)
 
     @staticmethod
-    def populate():
+    def populate(current_version=None):
         migrations_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../bin/migrations'))
 
         existing_names = [x.migration_file for x in SESSION.query(SchemaMigration).all()]
-        new_files = [os.path.basename(x) for x in os.listdir(migrations_path)
-                     if os.path.isfile(os.path.join(migrations_path, x)) and os.path.basename(x) not in existing_names]
+        new_files = sorted([os.path.basename(x) for x in os.listdir(migrations_path)
+                            if os.path.isfile(os.path.join(migrations_path, x))
+                               and os.path.basename(x) not in existing_names])
         dead_files = [x for x in existing_names if x not in os.listdir(migrations_path)]
 
         new_migrations = []
+        is_run = False if current_version is None else True
+        run_at = datetime.now() if is_run is True else None
         for name in new_files:
-            new_migrations.append(SchemaMigration(migration_file=name))
+            new_migrations.append(SchemaMigration(migration_file=name, run_status=is_run, run_at=run_at))
+            if current_version == name.split('.')[0:-1]:
+                is_run=False
 
         SESSION.add_all(new_migrations)
         if len(dead_files) > 0:
