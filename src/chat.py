@@ -52,7 +52,7 @@ def init():
         room = _clients[site].get_room(roomid)
 
         room.join()
-        room.watch(excepthook(lambda msg, client: on_msg(msg, client, room)))
+        room.watch_socket(excepthook(lambda msg, client: on_msg(msg, client, room)))
         _rooms[(site, roomid)] = room
 
     _init = True
