@@ -82,7 +82,7 @@ def dispatch_reply_command(msg, reply, cmd) -> str:
 
         assert arity == 1
 
-        return func(msg.id[0], original_msg=reply)
+        return func(msg.id, original_msg=reply)
 
 
 def dispatch_shorthand_command(msg, room) -> str:

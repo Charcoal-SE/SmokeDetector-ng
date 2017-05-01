@@ -156,8 +156,8 @@ def handle_err():
 
 @require_chat
 def get_last_messages(room, count):
-    messages = SESSION.query(SmokeyMessage).filter(SmokeyMessage.chat_site_url == room._client.host,
-                                                   SmokeyMessage.room_id == room.id)
+    messages = SESSION.query(SmokeyMessage.message_id).filter(SmokeyMessage.chat_site_url == room._client.host,
+                                                              SmokeyMessage.room_id == room.id)
 
-    for msg_id in [x.message_id for x in messages.order_by(SmokeyMessage.message_id.desc()).limit(count)]:
+    for msg_id, in messages.order_by(SmokeyMessage.message_id.desc()).limit(count):
         yield room._client.get_message(msg_id)
