@@ -5,3 +5,4 @@ regex==2017.04.05
 websocket-client==0.40.0
 sqlalchemy==1.1.9
 sqlalchemy-migrate==0.11.0
+requests==2.9.1

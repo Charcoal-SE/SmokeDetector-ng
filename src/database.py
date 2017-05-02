@@ -192,7 +192,7 @@ class BodyfetcherQueueItem(Base, BaseModel):
     """
     @staticmethod
     def by_site(site: str) -> list:
-        return SESSION.query(BodyfetcherQueueItem).filter(BodyfetcherQueueItem.site_url == site).all()
+        return SESSION.query(BodyfetcherQueueItem).filter(BodyfetcherQueueItem.site_url == site)
 
 
 class BodyfetcherQueueTiming(Base, BaseModel):
