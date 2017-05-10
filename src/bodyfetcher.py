@@ -25,7 +25,8 @@ def _queue_threshold(site):
 
 def _fire_api_request(items, site):
     item_ids = [x.id for x in items.all()]
-    previous_max_id = SESSION.query(func.max(BodyfetcherMaxId)).filter(BodyfetcherMaxId.site_url == site).all()[0][0]
+    previous_max_id = SESSION.query(func.max(BodyfetcherMaxId.max_id))\
+                             .filter(BodyfetcherMaxId.site_url == site).all()[0][0]
     intermediate_ids = list(range(previous_max_id + 1, min(item_ids)))
     fetch_ids = intermediate_ids + item_ids
     fetch_ids = fetch_ids[-min(len(fetch_ids), 100):]
