@@ -8,6 +8,7 @@ import ctypes
 import getpass
 import json
 import multiprocessing
+import os
 
 import config
 
@@ -38,7 +39,11 @@ def open_store():
     global _secrets
 
     sha256 = Cryptodome.Hash.SHA256.new()
-    sha256.update(getpass.getpass("Store password: ").encode("utf-8"))
+    
+    if "NG_KEY" in os.environ:
+        sha256.update(os.environ["NG_KEY"].encode("utf-8"))
+    else:
+        sha256.update(getpass.getpass("Store password: ").encode("utf-8"))
 
     key = sha256.digest()
 
