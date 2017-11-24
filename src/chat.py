@@ -42,7 +42,15 @@ def init():
 
     for site in _clients.keys():
         client = chatclient.Client(site)
-        client.login(secrets.email.value, secrets.pw.value)
+        
+        for _ in range(10):
+            try:
+                client.login(secrets.email.value, secrets.pw.value)
+                break
+            except:
+                pass
+        else:
+            raise Exception("Failed to log into " + site)
 
         _clients[site] = client
 
